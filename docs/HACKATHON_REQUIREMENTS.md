@@ -37,7 +37,7 @@ Nothing in this section is marked complete merely because a placeholder or plan 
 
 - [x] Working EvidenceGate project built with Codex and GPT-5.6.
 - [ ] Developer Tools category selected in the submission form.
-- [ ] Text description explains the project's features and operation.
+- [x] Text description explains the project's features and operation; the saved Devpost preview was verified.
 - [ ] Publicly visible YouTube demonstration video linked in Devpost.
 - [ ] Video is **less than three minutes**; judges need not watch beyond three minutes.
 - [ ] Video has a clear product demo and audio explaining what was built and how Codex and GPT-5.6 were used.

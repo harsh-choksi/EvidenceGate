@@ -10,11 +10,11 @@ This checklist is intentionally conservative. A planned artifact is not complete
 - [ ] Recheck Official Rules, FAQ, updates/notices, and actual submission form immediately before submission.
 - [ ] Entrant/team eligibility confirmed directly against the current rules.
 - [ ] Developer Tools selected as the single category.
-- [ ] Meaningful Codex and GPT-5.6 use is evident in the project, repository, README, description, and video.
+- [x] Meaningful Codex and GPT-5.6 use is evident in the project, repository, README, and saved description; the final video remains pending.
 
 ## Product and release
 
-- [ ] Working project installs and runs consistently on every claimed supported platform.
+- [x] Working project installs and runs consistently in hosted Windows, macOS, and Linux clean runners.
 - [x] `pnpm format:check`, lint, strict typecheck, tests, and build pass from a clean checkout.
 - [x] `pnpm demo` produces deterministic cached Fail and Pass reports and labels cached data.
 - [x] `pnpm demo:live` passes with GPT-5.6, OpenAI web search, official-domain filtering, returned sources, and native citations.
@@ -22,8 +22,8 @@ This checklist is intentionally conservative. A planned artifact is not complete
 - [x] Corrected patch passes every required internal, external, and hybrid criterion.
 - [x] Static reports work without a backend; automated integrity tests confirm visible/clickable citations and print-visible source titles/URLs.
 - [x] Exported JSON bundles verify and tampering is detected.
-- [ ] Judge test path does not require rebuilding the product from scratch.
-- [ ] Supported platforms and installation instructions match fresh-clone tests.
+- [x] Judge test path does not require rebuilding the product from scratch.
+- [x] Supported platforms and installation instructions match fresh-clone and hosted matrix tests.
 
 ## Security, privacy, and licensing
 
@@ -39,7 +39,7 @@ This checklist is intentionally conservative. A planned artifact is not complete
 
 - [x] README includes product/tagline, screenshot, problem, dual-evidence explanation, hybrid example, quick start, demo/live setup, API configuration, CLI, policies, citation integrity, architecture, security, privacy, limits, Codex/GPT-5.6/web-search use, testing, and license.
 - [x] README clearly documents where Codex accelerated work, where the entrant made key decisions, and how Codex and GPT-5.6 contributed.
-- [ ] README has exact setup, sample-data/fixtures, supported platform, and test instructions verified from a fresh clone.
+- [x] README has exact setup, sample-data/fixtures, supported platform, and test instructions verified from a fresh clone and hosted matrix.
 - [x] Final repository URL returns `200 OK` to an unauthenticated client with `logged_in=no`.
 - [x] The public repository includes the MIT license.
 - [ ] Project/demo/test access remains free and unrestricted through the end of judging.
@@ -64,7 +64,7 @@ Working copy: [Devpost submission draft](DEVPOST_SUBMISSION_DRAFT.md).
 Draft `1103829-evidencegate` was created on 2026-07-19. Project overview and project details are saved; required personal/eligibility fields, the video URL, and the `/feedback` Session ID remain for the entrant.
 
 - [x] Project title and tagline saved without trademark/legal-availability claims.
-- [ ] Text description accurately explains features and functionality without unsupported claims.
+- [x] Text description accurately explains features and functionality; the saved Devpost preview was checked after removing its duplicate default headings.
 - [ ] Developer Tools track selected.
 - [ ] Repository URL entered.
 - [ ] Public YouTube URL entered.

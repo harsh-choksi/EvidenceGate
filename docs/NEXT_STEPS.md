@@ -8,7 +8,8 @@ This is a conservative backlog, not a completion report. Verified facts and comm
 - [x] Run `pnpm demo` from a clean installation and verify both output paths, gate results, and bundle hashes.
 - [x] Confirm the incomplete fixture fails for the intended internal/external mismatch and the corrected fixture passes.
 - [x] Verify cached and successful-run live bundle hashes and cross-references after generation.
-- [ ] Check report links, keyboard focus, print output, escaping, and cached labels in a browser.
+- [x] Check the deployed report links, escaping, Fail/Pass results, and cached labels in a signed-out browser.
+- [ ] Complete interactive keyboard-focus and print-output QA if a printed/PDF report will be submitted.
 - [x] Review the public release manifest, generated artifacts, and Git history for secrets and machine-local paths.
 
 ## Live OpenAI verification
@@ -29,14 +30,14 @@ Cached fixtures do not satisfy these live items.
 - [x] Complete prompt-injection, fabricated-citation, URL/domain bypass, range, stale-source, and conflict tests.
 - [ ] Test command timeout behavior across Windows, macOS, and Linux; document process-tree limitations.
 - [x] Review dependency versions, licenses, and supply-chain risk; final entrant legal review remains required.
-- [x] Test a fresh Windows clone with only the documented prerequisites; hosted Ubuntu CI also passes.
+- [x] Test a fresh Windows clone with only the documented prerequisites; hosted Windows, macOS, and Ubuntu CI also pass.
 - [ ] Add policy-version migration tests before changing the gate or source schemas.
 - [ ] Perform a focused human security review using [THREAT_MODEL.md](THREAT_MODEL.md).
 
 ## Demo and documentation
 
 - [x] Reconcile the judge-facing README and recording commands with the implemented package scripts and CLI help.
-- [ ] Replace the text teaser only if a real final report screenshot is captured and reviewed.
+- [x] Add a real final judge-site screenshot after visual review; retain the text evidence example for accessibility and context.
 - [x] Rehearse the cached and live demo paths without manual data editing; the final post-freeze live rerun remains separate.
 - [x] Update [CODEX_USAGE.md](CODEX_USAGE.md) from actual sessions and retain public commit/CI evidence.
 - [ ] Keep cached/live labels visible in terminal, report, narration, and screenshots.
