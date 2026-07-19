@@ -1,6 +1,6 @@
 # Devpost submission draft
 
-This is an editable draft for human review. It is not a submission receipt, and the video, Codex feedback ID, eligibility, and final form fields must be completed and verified by the entrant.
+This is an editable draft for human review. Devpost draft `1103829-evidencegate` was created on 2026-07-19; its overview and project-details story are saved. It is not a submission receipt, and the video, Codex feedback ID, eligibility, country, and final form fields must be completed and verified by the entrant.
 
 ## Project title
 
@@ -35,7 +35,13 @@ AI-generated changes can look plausible while missing an acceptance criterion, r
 
 ## Demo
 
-The packaged cached demo is deterministic and does not require an API key:
+Immediate no-build judge path:
+
+**https://harsh-choksi.github.io/EvidenceGate/**
+
+The hosted page exposes self-contained Fail and Pass HTML reports plus their canonical JSON bundles. It requires no account, API key, installation, or source rebuild and labels its sanitized OpenAI response fixture as cached rather than live.
+
+Optional local cached demo:
 
 Prerequisites: Git and Node.js 20.12 or newer.
 
@@ -71,6 +77,8 @@ TypeScript, Node.js, pnpm workspaces, OpenAI Responses API, GPT-5.6, OpenAI web 
 ## Links and human-only fields
 
 - Repository URL: **https://github.com/harsh-choksi/EvidenceGate** (public and unauthenticated access verified)
+- Hosted no-build judge demo: **https://harsh-choksi.github.io/EvidenceGate/**
+- Supported platforms: **Windows, macOS, and Linux, contingent on the final three-platform CI run**
 - Public YouTube demo: **PENDING RECORDING/UPLOAD/SIGNED-OUT CHECK**
 - Primary Codex `/feedback` Session ID: **PENDING CAPTURE**
 - Eligibility/team confirmation: **PENDING ENTRANT REVIEW**

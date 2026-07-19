@@ -80,6 +80,8 @@ RUN_LIVE_OPENAI_TESTS=false    # must be true as well for live tests
 
 The API key must never be placed in task JSON, YAML configuration, search queries, fixtures, reports, or committed files. Prefer process environment injection or a local ignored `.env` file.
 
+Use a dedicated OpenAI Project and a **Restricted** project key for live verification. The minimum project-key permissions are `Model capabilities: Request` and `Responses API: Write`; `gpt-5.6` must be enabled in the project's Model Usage settings. `List models` and unused resources such as Assistants, Threads, Files, Vector Stores, Prompts, Batch, Evals, Fine-tuning, and Videos remain `None`. Web search is invoked within the Responses request and has no separate published key permission. Keep the key out of GitHub Actions, inject it only for the bounded live command, and revoke a temporary release key afterward.
+
 The default repository configuration is illustrated by `.evidencegate.example.yml`. For OpenAI product claims, the implementation's official-documentation preset allowlists `developers.openai.com` and `platform.openai.com`; callers can provide an explicit policy when another official host is required.
 
 ## Cached and live modes

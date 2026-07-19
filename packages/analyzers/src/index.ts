@@ -155,7 +155,10 @@ const EXCLUDED_DIRECTORIES = new Set([".git", "node_modules", "dist", "coverage"
 
 function walk(root: string, current = root): SourceFile[] {
   const files: SourceFile[] = [];
-  for (const entry of readdirSync(current)) {
+  const entries = readdirSync(current).sort((left, right) =>
+    left < right ? -1 : left > right ? 1 : 0,
+  );
+  for (const entry of entries) {
     if (EXCLUDED_DIRECTORIES.has(entry)) continue;
     const absolute = path.join(current, entry);
     const stats = statSync(absolute);

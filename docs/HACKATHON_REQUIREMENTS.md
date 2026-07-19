@@ -35,7 +35,7 @@ The Responses API and OpenAI web search are central EvidenceGate product decisio
 
 Nothing in this section is marked complete merely because a placeholder or plan exists.
 
-- [ ] Working EvidenceGate project built with Codex and GPT-5.6.
+- [x] Working EvidenceGate project built with Codex and GPT-5.6.
 - [ ] Developer Tools category selected in the submission form.
 - [ ] Text description explains the project's features and operation.
 - [ ] Publicly visible YouTube demonstration video linked in Devpost.
@@ -43,9 +43,9 @@ Nothing in this section is marked complete merely because a placeholder or plan 
 - [ ] Video has a clear product demo and audio explaining what was built and how Codex and GPT-5.6 were used.
 - [ ] Video contains no third-party trademarks, copyrighted music, or other material without permission.
 - [ ] Repository URL supplied for judging and testing.
-- [ ] Repository is either public with relevant licensing, or private and shared with `testing@devpost.com` and `build-week-event@openai.com`.
-- [ ] README includes setup instructions, any required sample data, and clear run/test guidance.
-- [ ] README explains where Codex accelerated the workflow, where the entrant made key product/engineering/design decisions, and how GPT-5.6 and Codex contributed.
+- [x] Repository is either public with relevant licensing, or private and shared with `testing@devpost.com` and `build-week-event@openai.com`.
+- [x] README includes setup instructions, any required sample data, and clear run/test guidance.
+- [x] README explains where Codex accelerated the workflow, where the entrant made key product/engineering/design decisions, and how GPT-5.6 and Codex contributed.
 - [ ] Primary Codex `/feedback` Session ID supplied from the thread where most core functionality was built.
 - [ ] As a Developer Tool, the submission states installation instructions and supported platforms and gives judges a test path that does not require rebuilding from scratch (for example, a ready demo, sandbox, or test account).
 - [ ] Working project access is free and unrestricted for sponsor, administrator, and judges through the end of judging.

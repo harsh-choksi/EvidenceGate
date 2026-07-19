@@ -20,6 +20,7 @@
     "format:check": "prettier --check .",
     "lint": "pnpm build && pnpm lint:source",
     "lint:source": "eslint . --max-warnings 0",
+    "pages:build": "pnpm demo && tsx scripts/build-pages-site.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "pnpm build && pnpm typecheck:source",

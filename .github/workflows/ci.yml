@@ -4,13 +4,19 @@ on:
   push:
     branches: [main, master]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    name: Verify (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -23,8 +29,70 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm verify
       - run: pnpm demo
+      - run: pnpm evidencegate verify .evidencegate/demo/incomplete/evidence-bundle.json
+      - run: pnpm evidencegate verify .evidencegate/demo/corrected/evidence-bundle.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: evidencegate-demo-reports
+          name: evidencegate-demo-reports-${{ matrix.os }}
           path: .evidencegate/demo/
+
+  determinism:
+    name: Compare cross-platform artifacts
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: evidencegate-demo-reports-*
+          path: .evidencegate/cross-platform/
+      - run: node scripts/verify-cross-platform-demo.ts .evidencegate/cross-platform/
+
+  pages-build:
+    name: Build judge demo
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    needs: [verify, determinism]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm pages:build
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: .evidencegate/pages/
+
+  pages-deploy:
+    name: Publish judge demo
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    needs: pages-build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v6
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
