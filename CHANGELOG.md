@@ -23,3 +23,4 @@
 - Remove pnpm-only project settings that npm interpreted as unsupported configuration when invoking the pinned package manager through `npx`.
 - Harden printed reports with gate-aware hero copy, high-contrast decisions, compact two-column source provenance, stable section breaks, deduplicated evidence rows, distinct PDF titles, native-citation counts, and honest bundle-report narrative retention notices.
 - Count every required non-passing criterion in the report summary, including partial and manual-review states, while excluding optional criteria from the blocking total.
+- Bootstrap workspace declarations before type-aware lint and typecheck commands so offline verification works from a clean checkout without ignored local build artifacts.

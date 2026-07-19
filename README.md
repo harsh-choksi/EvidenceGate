@@ -206,7 +206,7 @@ Run the full offline verification suite:
 npx.cmd --yes pnpm@11.9.0 verify
 ```
 
-The `verify` script runs formatting, lint, strict typechecking, tests, and the build in sequence. Use `npx` instead of `npx.cmd` on macOS or Linux. Tests cover schemas, hybrid gate logic, forged gate decisions, URL/domain rules, fabricated citations, invalid ranges, stale/conflicting sources, redaction, structured-output coverage and ID binding, prompt injection, bounded commands, Git parsing, and report escaping/link safety. The `demo` script separately asserts the cached Fail-to-Pass invariant. Live tests remain behind explicit environment opt-ins; they are not part of ordinary CI.
+The `verify` script checks formatting, builds the workspace declarations needed by type-aware tooling, then runs lint, strict typechecking, and tests. The standalone `lint` and `typecheck` commands perform the same build bootstrap so they also work immediately after a clean install. Use `npx` instead of `npx.cmd` on macOS or Linux. Tests cover schemas, hybrid gate logic, forged gate decisions, URL/domain rules, fabricated citations, invalid ranges, stale/conflicting sources, redaction, structured-output coverage and ID binding, prompt injection, bounded commands, Git parsing, and report escaping/link safety. The `demo` script separately asserts the cached Fail-to-Pass invariant. Live tests remain behind explicit environment opt-ins; they are not part of ordinary CI.
 
 Verified command results belong in [implementation status](docs/IMPLEMENTATION_STATUS.md). Do not infer a green build from this README.
 

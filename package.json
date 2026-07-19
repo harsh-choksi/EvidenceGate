@@ -18,12 +18,14 @@
     "evidencegate": "pnpm build && tsx apps/cli/src/index.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "pnpm build && pnpm lint:source",
+    "lint:source": "eslint . --max-warnings 0",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "pnpm -r --if-present typecheck",
+    "typecheck": "pnpm build && pnpm typecheck:source",
+    "typecheck:source": "pnpm -r --if-present typecheck",
     "validate:submission": "tsx scripts/validate-submission.ts",
-    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "verify": "pnpm format:check && pnpm build && pnpm lint:source && pnpm typecheck:source && pnpm test"
   },
   "dependencies": {
     "@evidencegate/analyzers": "workspace:*",
