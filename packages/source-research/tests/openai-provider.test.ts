@@ -20,7 +20,7 @@ describe("OpenAI web-search provider", () => {
   it("builds the verified Responses API request shape", () => {
     const request = buildOpenAIWebSearchRequest(plan);
     expect(request).toMatchObject({
-      model: "gpt-5.6",
+      model: "gpt-5.6-terra",
       tools: [
         {
           type: "web_search",
@@ -104,6 +104,6 @@ describe("OpenAI web-search provider", () => {
     expect(create).toHaveBeenCalledOnce();
     expect(create.mock.calls[0]?.[0]).toEqual(buildOpenAIWebSearchRequest(plan));
     expect(result.registry.valid).toBe(true);
-    expect(result.metadata.model).toBe("gpt-5.6");
+    expect(result.metadata.model).toBe("gpt-5.6-terra");
   });
 });

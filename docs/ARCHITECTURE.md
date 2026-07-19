@@ -22,13 +22,13 @@ flowchart LR
     R --> IE
     N --> SP["Source-plan generator"]
     SP --> P{"Visible preview / approval"}
-    P -->|approved| WS["Responses API + GPT-5.6 + web_search"]
+    P -->|approved| WS["Responses API + GPT-5.6 Terra + web_search"]
     P -->|not approved| SE["No search / unresolved external claims"]
     WS --> SR["Source registry + citation validator"]
     IE --> LA["Deterministic workflow assessment"]
     SR --> LA
     N --> LA
-    IE --> A["Optional live-demo GPT-5.6 adjudication"]
+    IE --> A["Optional live-demo GPT-5.6 Terra adjudication"]
     SR --> A
     N --> A
     LA --> V["Schema and reference validation"]
@@ -58,7 +58,7 @@ The generic CLI workflow constructs bounded assessments deterministically from G
 
 ### Stage A: external research
 
-Input is limited to the normalized external claim, approved queries, source policy, allowed/blocked domains, freshness, and version/date context. It normally excludes repository code. GPT-5.6 uses `web_search`; the system retains the `web_search_call`, citation annotations, and requested complete source list. Output is a bounded cited narrative plus raw provenance for registry construction.
+Input is limited to the normalized external claim, approved queries, source policy, allowed/blocked domains, freshness, and version/date context. It normally excludes repository code. GPT-5.6 Terra uses `web_search`; the system retains the `web_search_call`, citation annotations, and requested complete source list. Output is a bounded cited narrative plus raw provenance for registry construction.
 
 ### Stage B: live-demo evidence adjudication
 

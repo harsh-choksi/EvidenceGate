@@ -20,6 +20,7 @@ import {
   type TaskSpecification,
 } from "@evidencegate/core";
 import { analyzeSourcedAnswerRepository } from "@evidencegate/analyzers";
+import { DEFAULT_OPENAI_MODEL } from "@evidencegate/config";
 import {
   createOpenAIEvidenceAdjudicatorFromEnvironment,
   extractCitedNarrativeContexts,
@@ -51,6 +52,10 @@ export interface DemoScenarioResult {
   bundleHash: string;
   commandResult: CommandResult;
   adjudicationAttemptCount?: number;
+}
+
+export interface DemoRunOptions {
+  model?: string;
 }
 
 const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -142,6 +147,7 @@ function sourceSearchPlan(task: TaskSpecification, mode: DemoSourceMode): Source
 async function collectResearch(
   mode: DemoSourceMode,
   plan: SourceSearchPlan,
+  liveModel: string,
 ): Promise<SourceResearchResult> {
   if (mode === "cached") {
     return parseCachedOpenAIResearchResponse(
@@ -155,7 +161,7 @@ async function collectResearch(
   if (!apiKey) throw new Error("OPENAI_API_KEY is required for live research.");
   const provider = await createOpenAIWebSearchProviderFromEnvironment(
     { OPENAI_API_KEY: apiKey, RUN_LIVE_OPENAI_TESTS: "true" },
-    { model: "gpt-5.6", throwOnCitationIntegrityFailure: true },
+    { model: liveModel, throwOnCitationIntegrityFailure: true },
   );
   return provider.research(plan, {
     approved: true,
@@ -543,6 +549,7 @@ async function adjudicateEvidence(
   research: SourceResearchResult,
   internalEvidence: EvidenceItem[],
   sources: ExternalSourceRecord[],
+  model: string,
 ): Promise<{
   assessments: {
     internal: InternalClaimAssessment[];
@@ -557,7 +564,7 @@ async function adjudicateEvidence(
   const input = buildAdjudicationInput(task, research, internalEvidence, sources);
   const adjudicator = await createOpenAIEvidenceAdjudicatorFromEnvironment(
     { OPENAI_API_KEY: apiKey, RUN_LIVE_OPENAI_ADJUDICATION: "true" },
-    { model: "gpt-5.6", maxValidationRetries: 1 },
+    { model, maxValidationRetries: 1 },
   );
   const result = await adjudicator.adjudicateDetailed(input, {
     signal: AbortSignal.timeout(90_000),
@@ -568,7 +575,7 @@ async function adjudicateEvidence(
       modelRunId: `model-run-${scenario}-adjudication-attempt-${attempt.attempt}`,
       criterionIds: task.acceptanceCriteria.map((criterion) => criterion.criterionId),
       purpose: "evidence_adjudication",
-      model: "gpt-5.6",
+      model,
       startedAt: attempt.startedAt,
       completedAt: attempt.completedAt,
       status: attempt.status === "completed" ? "completed" : "failed",
@@ -611,12 +618,15 @@ export async function buildDemoScenario(
   scenario: DemoScenario,
   sourceMode: DemoSourceMode,
   researchOverride?: SourceResearchResult,
+  options: DemoRunOptions = {},
 ): Promise<DemoScenarioResult> {
   const task = TaskSpecificationSchema.parse(
     readJson(path.join(workspaceRoot, "fixtures", "demo-task.json")),
   );
   const plan = sourceSearchPlan(task, sourceMode);
-  const research = researchOverride ?? (await collectResearch(sourceMode, plan));
+  const research =
+    researchOverride ??
+    (await collectResearch(sourceMode, plan, options.model ?? DEFAULT_OPENAI_MODEL));
   const repositoryRoot = path.join(workspaceRoot, "fixtures", `${scenario}-patch`);
   const analysis = analyzeSourcedAnswerRepository(repositoryRoot, task.acceptanceCriteria);
   const commandResult = await executeFixtureTests(repositoryRoot, scenario);
@@ -632,7 +642,14 @@ export async function buildDemoScenario(
   );
   const adjudication =
     sourceMode === "live"
-      ? await adjudicateEvidence(scenario, task, research, internalEvidence, sources)
+      ? await adjudicateEvidence(
+          scenario,
+          task,
+          research,
+          internalEvidence,
+          sources,
+          research.metadata.model,
+        )
       : undefined;
   const assessments = adjudication?.assessments ?? deterministicAssessments;
   const findings = buildFindings(assessments.combined);
@@ -673,7 +690,7 @@ export async function buildDemoScenario(
               modelRunId: `model-run-${scenario}-research`,
               criterionIds: [...externalCriterionIds],
               purpose: "external_research",
-              model: "gpt-5.6",
+              model: research.metadata.model,
               startedAt: research.metadata.startedAt,
               completedAt: research.metadata.completedAt,
               status: research.metadata.status,
@@ -708,7 +725,7 @@ export async function buildDemoScenario(
     gateExplanation: gate.summary,
     bundleHash: bundle.bundleHash,
     taskTitle: task.title,
-    model: sourceMode === "live" ? "gpt-5.6" : "gpt-5.6 · cached response",
+    model: sourceMode === "live" ? research.metadata.model : "gpt-5.6 · cached response",
     sourcePolicy:
       sourceMode === "live"
         ? "official_only · developers.openai.com / platform.openai.com · no maximum source age"
@@ -794,11 +811,18 @@ export async function buildDemoScenario(
   };
 }
 
-export async function runFailToPassDemo(sourceMode: DemoSourceMode): Promise<DemoScenarioResult[]> {
+export async function runFailToPassDemo(
+  sourceMode: DemoSourceMode,
+  options: DemoRunOptions = {},
+): Promise<DemoScenarioResult[]> {
   const task = TaskSpecificationSchema.parse(
     readJson(path.join(workspaceRoot, "fixtures", "demo-task.json")),
   );
-  const research = await collectResearch(sourceMode, sourceSearchPlan(task, sourceMode));
+  const research = await collectResearch(
+    sourceMode,
+    sourceSearchPlan(task, sourceMode),
+    options.model ?? DEFAULT_OPENAI_MODEL,
+  );
   const incomplete = await buildDemoScenario("incomplete", sourceMode, research);
   const corrected = await buildDemoScenario("corrected", sourceMode, research);
   if (incomplete.gateStatus !== "fail") {

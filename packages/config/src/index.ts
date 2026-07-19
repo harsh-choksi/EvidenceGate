@@ -3,6 +3,23 @@ import path from "node:path";
 import { parse } from "yaml";
 import { z } from "zod";
 
+export const DEFAULT_OPENAI_MODEL = "gpt-5.6-terra";
+
+export interface OpenAIModelEnvironment {
+  EVIDENCEGATE_OPENAI_MODEL?: string;
+}
+
+export function resolveOpenAIModel(environment: OpenAIModelEnvironment = {}): string {
+  const configuredModel = environment.EVIDENCEGATE_OPENAI_MODEL;
+  if (configuredModel === undefined) return DEFAULT_OPENAI_MODEL;
+
+  return z
+    .string()
+    .trim()
+    .min(1, "EVIDENCEGATE_OPENAI_MODEL must be a non-empty model ID.")
+    .parse(configuredModel);
+}
+
 const commandSchema = z
   .object({
     command: z.string().min(1),
@@ -39,7 +56,7 @@ export const evidenceGateConfigSchema = z
     commands: z.record(z.string(), commandSchema),
     analysis: z
       .object({
-        model: z.string().min(1).default("gpt-5.6"),
+        model: z.string().min(1).default(DEFAULT_OPENAI_MODEL),
         maxChangedFiles: z.number().int().positive().default(100),
         maxDiffBytes: z.number().int().positive().default(500_000),
         redactSecrets: z.boolean().default(true),

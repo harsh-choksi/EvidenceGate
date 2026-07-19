@@ -9,7 +9,7 @@ import {
 const liveEnabled = isLiveOpenAIResearchEnabled(process.env);
 
 describe.skipIf(!liveEnabled)("live OpenAI web search", () => {
-  it("returns source metadata and bound citation annotations from GPT-5.6", async () => {
+  it("returns source metadata and bound citation annotations from GPT-5.6 Terra", async () => {
     const provider = await createOpenAIWebSearchProviderFromEnvironment(process.env);
     const plan = createSourceSearchPlan({
       criterionId: "live-openai-web-search",
@@ -20,7 +20,7 @@ describe.skipIf(!liveEnabled)("live OpenAI web search", () => {
     });
     const result = await provider.research(plan, { approved: true });
 
-    expect(result.metadata.model).toBe("gpt-5.6");
+    expect(result.metadata.model).toBe("gpt-5.6-terra");
     expect(result.metadata.webSearchCallIds.length).toBeGreaterThan(0);
     expect(result.registry.sources.length).toBeGreaterThan(0);
     expect(result.registry.citations.length).toBeGreaterThan(0);

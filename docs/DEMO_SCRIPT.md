@@ -47,7 +47,7 @@ Running `demo:live` before recording is the explicit approval for this packaged,
 
 **Say:**
 
-> With the approved plan, GPT-5.6 uses the Responses API web-search tool. EvidenceGate retains the actual source list and citation annotations, and accepts only citations that bind to those returned sources. OpenAI's current documentation requires web-result citations shown to users to be visible and clickable.
+> With the approved plan, GPT-5.6 Terra uses the Responses API web-search tool. EvidenceGate retains the actual source list and citation annotations, and accepts only citations that bind to those returned sources. OpenAI's current documentation requires web-result citations shown to users to be visible and clickable.
 
 ## 1:10–1:35 — Combined failure
 
@@ -92,7 +92,7 @@ Open `.evidencegate/demo/live/corrected/report.html`. Show internal `Verified`, 
 
 **Say:**
 
-> Now repository checks verify the implementation, official sources support the current requirement, and every citation maps to returned metadata. GPT-5.6 performs research and structured evidence mapping, but versioned policy code computes the release decision.
+> Now repository checks verify the implementation, official sources support the current requirement, and every citation maps to returned metadata. GPT-5.6 Terra performs research and structured evidence mapping, but versioned policy code computes the release decision.
 
 ## 2:25–2:50 — Impact
 

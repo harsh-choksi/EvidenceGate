@@ -27,7 +27,7 @@ commands:
     required: true
 
 analysis:
-  model: gpt-5.6
+  model: gpt-5.6-terra
   maxChangedFiles: 100
   maxDiffBytes: 500000
   redactSecrets: true

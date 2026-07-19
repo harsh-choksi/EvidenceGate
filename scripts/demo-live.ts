@@ -1,4 +1,5 @@
 import { runFailToPassDemo } from "./demo-engine.js";
+import { resolveOpenAIModel } from "@evidencegate/config";
 
 try {
   process.loadEnvFile?.(".env");
@@ -11,8 +12,10 @@ if (!process.env["OPENAI_API_KEY"]) {
   process.exit(1);
 }
 
+const liveModel = resolveOpenAIModel(process.env);
+
 console.log("EvidenceGate live demonstration");
-console.log("Source mode: LIVE GPT-5.6 WEB SEARCH + STRUCTURED EVIDENCE ADJUDICATION");
+console.log(`Source mode: LIVE ${liveModel} WEB SEARCH + STRUCTURED EVIDENCE ADJUDICATION`);
 console.log("Search is restricted to developers.openai.com and platform.openai.com.");
 console.log(
   "Freshness policy: no maximum source age for canonical live documentation; retrieval and provenance remain recorded.\n",
@@ -20,7 +23,7 @@ console.log(
 
 async function main(): Promise<void> {
   const started = Date.now();
-  const results = await runFailToPassDemo("live");
+  const results = await runFailToPassDemo("live", { model: liveModel });
   for (const result of results) {
     console.log(`${result.scenario.toUpperCase()} PATCH · gate ${result.gateStatus.toUpperCase()}`);
     console.log(`  Adjudication attempts: ${result.adjudicationAttemptCount ?? 0}`);

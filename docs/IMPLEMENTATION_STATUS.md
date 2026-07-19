@@ -1,6 +1,6 @@
 # Implementation status
 
-Snapshot date: **2026-07-19**. This is a conservative record of observed results. It includes one successful packaged end-to-end live API Fail-to-Pass run, public release-candidate merge `bd452a1f100c5da78f861b2f85d8bb763b552986`, successful hosted Windows/macOS/Linux CI with cross-platform hash comparison, and a deployed no-build judge site. It does not claim completion of the separate opt-in live test file, the final post-freeze live run, a final tag, video completion, `/feedback` capture, eligibility review, or Build Week submission.
+Snapshot date: **2026-07-19**. This is a conservative record of observed results. It includes one successful packaged end-to-end live API Fail-to-Pass run using the historical GPT-5.6 Sol alias, public release-candidate merge `bd452a1f100c5da78f861b2f85d8bb763b552986`, successful hosted Windows/macOS/Linux CI with cross-platform hash comparison, and a deployed no-build judge site. The active default is now explicit `gpt-5.6-terra`, but a funded live Terra run has not yet completed. This record does not claim completion of the separate opt-in live test file, the final post-freeze live run, a final tag, video completion, `/feedback` capture, eligibility review, or Build Week submission.
 
 ## Verified release-candidate results
 
@@ -10,11 +10,11 @@ Snapshot date: **2026-07-19**. This is a conservative record of observed results
 | Formatting                 | `pnpm format:check` passed.                                                                                                                       |
 | Lint                       | `pnpm lint` passed with zero warnings.                                                                                                            |
 | Types                      | `pnpm typecheck` passed across the workspace.                                                                                                     |
-| Tests                      | `pnpm test` passed: 22 test files passed, 1 live-only file skipped; 186 tests passed, 1 live-only test skipped.                                   |
+| Tests                      | Current local `pnpm test` passed: 22 test files passed, 1 live-only file skipped; 187 tests passed, 1 live-only test skipped.                     |
 | Build                      | `pnpm build` passed.                                                                                                                              |
-| Full quality gate          | `pnpm verify` passed locally and on clean hosted Windows, macOS, and Ubuntu runners with build, lint, typecheck, and 186 offline tests.           |
+| Full quality gate          | Current `pnpm verify` passed locally with 187 offline tests; the pre-Terra merged baseline passed on clean hosted Windows, macOS, and Ubuntu.     |
 | Cached demo                | `pnpm demo` produced the intended Fail and Pass bundles/reports without a network or model call; all three hosted operating systems matched.      |
-| Live demo                  | `pnpm demo:live` completed live GPT-5.6 research and adjudication: incomplete Fail, corrected Pass, one adjudication attempt per scenario.        |
+| Live demo                  | The historical Sol-alias run completed live research and adjudication: incomplete Fail, corrected Pass, one adjudication attempt per scenario.    |
 | Cached bundle verification | The CLI verified both cached generated bundles; tampering and forged stored gate decisions are covered by negative tests.                         |
 | Live bundle verification   | The CLI independently verified both successful-run live bundles, their references, deterministic decisions, and canonical hashes.                 |
 | Live artifact scan         | A targeted scan of the two live JSON bundles and two HTML reports found no API-key or Bearer-token pattern.                                       |
@@ -39,7 +39,7 @@ The generated artifacts are written beneath `.evidencegate/demo/`:
 
 The corrected bundle contains 14 required criteria, 14 verified combined assessments, 2 validated source records, 2 native citation bindings, and 1 cached research run. It carries `deterministic-v2` plus the exact resolved gate-policy inputs. Its `modelRuns` list is empty because cached mode makes no model call.
 
-## OpenAI integration successfully live-verified
+## OpenAI integration and live-verification history
 
 The opt-in live path is implemented with two bounded GPT-5.6 Responses API stages:
 
@@ -58,7 +58,7 @@ The fifth completed live Stage-A research and both Stage-B adjudications, then t
 
 The sixth completed both live stages and reached 13 of 14 required criteria. Only `citation-annotations` remained partial: the official external source fully supported native annotations, and the eligible repository evidence proved annotation filtering and index parsing, but the demo's internal projection had incorrectly appended returned-source binding to that criterion. Binding is already owned and verified by the separate required `source-identifiers` security criterion. The projection is now atomic to annotation extraction/type/fields, while the deterministic analyzer requires exact `output_text.annotations`, `url_citation`, URL, title, start-index, and end-index evidence instead of generic words. Source binding remains independently required and unchanged. These repairs and their negative tests were offline-verified before the seventh live rerun.
 
-The seventh live run succeeded end to end in 107.3 seconds. One shared `gpt-5.6` research run completed four Web Search calls and retained 13 current, allowed, official source records plus 5 validated native citations; every source domain was `developers.openai.com` or `platform.openai.com`. Each scenario completed one strict adjudication attempt without correction or tools. The incomplete patch correctly failed at 5 of 14 required criteria; the corrected patch passed all 14. The CLI independently revalidated both bundles, their references, their stored deterministic decisions, and their canonical hashes. A targeted scan of both JSON bundles and HTML reports found no API-key or Bearer-token pattern.
+The seventh live run succeeded end to end in 107.3 seconds. One shared `gpt-5.6` research run using the then-default Sol alias completed four Web Search calls and retained 13 current, allowed, official source records plus 5 validated native citations; every source domain was `developers.openai.com` or `platform.openai.com`. Each scenario completed one strict adjudication attempt without correction or tools. The incomplete patch correctly failed at 5 of 14 required criteria; the corrected patch passed all 14. The CLI independently revalidated both bundles, their references, their stored deterministic decisions, and their canonical hashes. A targeted scan of both JSON bundles and HTML reports found no API-key or Bearer-token pattern.
 
 | Live scenario                    | Gate | Bundle SHA-256                                                     |
 | -------------------------------- | ---- | ------------------------------------------------------------------ |
@@ -68,6 +68,8 @@ The seventh live run succeeded end to end in 107.3 seconds. One shared `gpt-5.6`
 Post-run structural QA found that the otherwise valid model-written research narrative used its own `PASS` heading, including inside the incomplete report whose deterministic gate was `Fail`. The report now labels all such prose as an untrusted external research narrative rather than a gate decision, and the Stage-A prompt explicitly forbids repository assessment and PASS/FAIL or release language. The HTML reports can be regenerated from the already verified live bundles without another network call; the prompt hardening is offline-tested and remains to be exercised by the final post-freeze live run.
 
 On 2026-07-19, the final post-freeze packaged live smoke and the separately gated source-research live test were attempted with process-scoped secrets and opt-ins. Both requests reached OpenAI but returned `429 insufficient_quota` before producing a research result. Neither attempt therefore satisfies the final live-release protocol. The `finally` cleanup removed the key and live-test variables, and no tag or GitHub release was created. Restore organization/project API quota or credits before one bounded retry.
+
+Also on 2026-07-19, EvidenceGate's active OpenAI default moved to explicit [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra). The same resolved model is now used for live Web Search research, structured evidence adjudication, model-run metadata, and report metadata; `EVIDENCEGATE_OPENAI_MODEL` remains an explicit override. No prompt, reasoning setting, tool, schema, retry, citation, or deterministic gate-policy behavior changed. The full offline quality gate passed with 187 tests, the cached Fail-to-Pass demo retained hashes `3f7f66be...` and `41b7b0b1...`, and the submission validator passed. A live Terra result remains pending because the quota failure predates this migration and no unverified result is being claimed.
 
 Release hardening also pins tracked text to LF for deterministic cross-platform fixtures, raises the declared Node.js floor to 20.12 because the live launcher uses `process.loadEnvFile`, and narrows the example OpenAI documentation policy to `developers.openai.com` and `platform.openai.com`.
 
@@ -92,7 +94,7 @@ Pull request [#1](https://github.com/harsh-choksi/EvidenceGate/pull/1) added the
 
 ## Still open before submission
 
-- Restore organization/project OpenAI API quota or credits, then rerun the separately gated opt-in live test file and final post-freeze packaged live smoke with an authorized `OPENAI_API_KEY`; ordinary CI must remain offline.
+- Restore organization/project OpenAI API quota or credits, confirm `gpt-5.6-terra` is enabled under Project Model Usage, then rerun the separately gated opt-in live test file and final post-freeze packaged live smoke with an authorized `OPENAI_API_KEY`; ordinary CI must remain offline.
 - Recheck the official rules, FAQ/notices, eligibility, selected category, and actual Devpost form immediately before submission.
 - Record, upload, and signed-out-test the public video.
 - Capture and verify the primary Codex `/feedback` Session ID.
