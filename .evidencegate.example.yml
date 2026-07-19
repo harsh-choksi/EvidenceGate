@@ -1,0 +1,81 @@
+version: 1
+
+repository:
+  baseRef: main
+  headRef: HEAD
+
+commands:
+  test:
+    command: pnpm test
+    enabled: true
+    timeoutSeconds: 180
+    required: true
+  lint:
+    command: pnpm lint
+    enabled: true
+    timeoutSeconds: 120
+    required: true
+  typecheck:
+    command: pnpm typecheck
+    enabled: true
+    timeoutSeconds: 120
+    required: true
+  build:
+    command: pnpm build
+    enabled: true
+    timeoutSeconds: 180
+    required: true
+
+analysis:
+  model: gpt-5.6
+  maxChangedFiles: 100
+  maxDiffBytes: 500000
+  redactSecrets: true
+
+sources:
+  mode: requested
+  provider: openai_web_search
+  defaultPolicy: primary_sources
+  previewRequired: true
+  maximumClaimsPerRun: 10
+  maximumSearchQueriesPerClaim: 3
+  minimumSourceCount: 1
+  storeSourceMetadata: true
+  storeResearchNarrative: true
+  storeFullPageContent: false
+  policies:
+    openai_official:
+      sourcePolicy: official_only
+      allowedDomains:
+        - developers.openai.com
+        - platform.openai.com
+      minimumSourceCount: 1
+      maxSourceAgeDays: 30
+
+gate:
+  failOnUnsupportedRequiredCriterion: true
+  failOnContradictedRequiredCriterion: true
+  failOnRequiredCommandFailure: true
+  failOnCriticalFinding: true
+  external:
+    failOnRequiredSourceError: true
+    failOnRequiredExternalContradiction: true
+    manualReviewOnConflictingSources: true
+    requireBothDomainsForHybridClaims: true
+
+privacy:
+  excludedPaths:
+    - .env
+    - .env.*
+    - "**/*.pem"
+    - "**/*.key"
+    - node_modules/**
+    - dist/**
+    - coverage/**
+
+report:
+  outputDirectory: .evidencegate/reports
+  showClickableSources: true
+  showSearchQueries: true
+  showSourcePolicy: true
+  includeRawCommandOutput: false

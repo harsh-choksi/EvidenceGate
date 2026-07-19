@@ -1,0 +1,22 @@
+node_modules/
+.pnpm-store/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+.evidencegate/
+*.log
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+
+# Temporary editor and working files
+temp/
+tmp/
+.tmp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*~

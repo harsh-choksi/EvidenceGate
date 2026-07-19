@@ -1,0 +1,16 @@
+[
+  {
+    "sourceId": "source-old",
+    "url": "https://developers.openai.com/old",
+    "title": "Old official guidance",
+    "claimsSupported": ["claim-a"],
+    "claimsContradicted": []
+  },
+  {
+    "sourceId": "source-current",
+    "url": "https://developers.openai.com/current",
+    "title": "Current official guidance",
+    "claimsSupported": [],
+    "claimsContradicted": ["claim-a"]
+  }
+]

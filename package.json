@@ -1,0 +1,51 @@
+{
+  "name": "evidencegate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Verify AI-generated code against its requirements and authoritative sources.",
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=20.12.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --if-present build",
+    "clean": "pnpm -r --if-present clean",
+    "demo": "pnpm build && tsx scripts/demo.ts",
+    "demo:live": "pnpm build && tsx scripts/demo-live.ts",
+    "dev": "pnpm build && tsx apps/cli/src/index.ts",
+    "evidencegate": "pnpm build && tsx apps/cli/src/index.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "validate:submission": "tsx scripts/validate-submission.ts",
+    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "@evidencegate/analyzers": "workspace:*",
+    "@evidencegate/config": "workspace:*",
+    "@evidencegate/core": "workspace:*",
+    "@evidencegate/git": "workspace:*",
+    "@evidencegate/openai": "workspace:*",
+    "@evidencegate/report": "workspace:*",
+    "@evidencegate/runner": "workspace:*",
+    "@evidencegate/source-research": "workspace:*",
+    "@evidencegate/workflow": "workspace:*",
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@types/node": "^24.0.15",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
+    "vitest": "^3.2.4"
+  }
+}

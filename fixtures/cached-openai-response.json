@@ -1,0 +1,66 @@
+{
+  "id": "resp_cached_evidencegate_demo",
+  "object": "response",
+  "created_at": 1784347200,
+  "model": "gpt-5.6",
+  "output": [
+    {
+      "type": "web_search_call",
+      "id": "ws_cached_openai_docs",
+      "status": "completed",
+      "action": {
+        "type": "search",
+        "query": "OpenAI Responses API web search domain filtering sources citation annotations",
+        "sources": [
+          {
+            "type": "url",
+            "url": "https://developers.openai.com/api/docs/guides/tools-web-search",
+            "title": "Web search | OpenAI API",
+            "updated_at": "2026-07-18T00:00:00.000Z"
+          },
+          {
+            "type": "url",
+            "url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+            "title": "GPT-5.6 Sol Model | OpenAI API",
+            "updated_at": "2026-07-18T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "type": "message",
+      "id": "msg_cached_openai_docs",
+      "status": "completed",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "OpenAI documents the Responses API web_search tool, domain filters, complete source metadata, and URL citation annotations. Inline citations shown to users must be visible and clickable. GPT-5.6 supports web search in the Responses API.",
+          "annotations": [
+            {
+              "type": "url_citation",
+              "start_index": 0,
+              "end_index": 186,
+              "url": "https://developers.openai.com/api/docs/guides/tools-web-search",
+              "title": "Web search | OpenAI API"
+            },
+            {
+              "type": "url_citation",
+              "start_index": 187,
+              "end_index": 236,
+              "url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+              "title": "GPT-5.6 Sol Model | OpenAI API"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_evidencegate": {
+    "fixture": true,
+    "retrievedAt": "2026-07-18T00:00:00.000Z",
+    "sourcePolicy": "official_only",
+    "allowedDomains": ["developers.openai.com", "platform.openai.com", "openai.com"],
+    "notice": "Sanitized cached fixture. This is not a live API result."
+  }
+}
