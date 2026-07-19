@@ -1,6 +1,6 @@
 # Implementation status
 
-Snapshot date: **2026-07-18**. This is a conservative record of observed results. It includes one successful packaged end-to-end live API Fail-to-Pass run, a public release-candidate commit, successful hosted Ubuntu CI, and a fresh-clone Windows rehearsal. It does not claim completion of the separate opt-in live test file, manual macOS verification, final header-free PDF exports, a final tag, video completion, or Build Week submission.
+Snapshot date: **2026-07-19**. This is a conservative record of observed results. It includes one successful packaged end-to-end live API Fail-to-Pass run, public release-candidate merge `bd452a1f100c5da78f861b2f85d8bb763b552986`, successful hosted Windows/macOS/Linux CI with cross-platform hash comparison, and a deployed no-build judge site. It does not claim completion of the separate opt-in live test file, the final post-freeze live run, a final tag, video completion, `/feedback` capture, eligibility review, or Build Week submission.
 
 ## Verified release-candidate results
 
@@ -10,19 +10,21 @@ Snapshot date: **2026-07-18**. This is a conservative record of observed results
 | Formatting                 | `pnpm format:check` passed.                                                                                                                       |
 | Lint                       | `pnpm lint` passed with zero warnings.                                                                                                            |
 | Types                      | `pnpm typecheck` passed across the workspace.                                                                                                     |
-| Tests                      | `pnpm test` passed: 20 test files passed, 1 live-only file skipped; 169 tests passed, 1 live-only test skipped.                                   |
+| Tests                      | `pnpm test` passed: 22 test files passed, 1 live-only file skipped; 186 tests passed, 1 live-only test skipped.                                   |
 | Build                      | `pnpm build` passed.                                                                                                                              |
-| Full quality gate          | `pnpm verify` passed locally, from a fresh Windows clone, and in hosted Ubuntu CI with build, lint, typecheck, and 169 offline tests.             |
-| Cached demo                | `pnpm demo` produced the intended Fail and Pass bundles/reports without a network or model call. A second run produced the same bundle hashes.    |
+| Full quality gate          | `pnpm verify` passed locally and on clean hosted Windows, macOS, and Ubuntu runners with build, lint, typecheck, and 186 offline tests.           |
+| Cached demo                | `pnpm demo` produced the intended Fail and Pass bundles/reports without a network or model call; all three hosted operating systems matched.      |
 | Live demo                  | `pnpm demo:live` completed live GPT-5.6 research and adjudication: incomplete Fail, corrected Pass, one adjudication attempt per scenario.        |
 | Cached bundle verification | The CLI verified both cached generated bundles; tampering and forged stored gate decisions are covered by negative tests.                         |
 | Live bundle verification   | The CLI independently verified both successful-run live bundles, their references, deterministic decisions, and canonical hashes.                 |
 | Live artifact scan         | A targeted scan of the two live JSON bundles and two HTML reports found no API-key or Bearer-token pattern.                                       |
 | CLI smoke checks           | Help/version output and `task validate fixtures/demo-task.json` completed successfully.                                                           |
-| Submission validator       | `pnpm validate:submission` passed from the fresh clone; after recording release checks, it reports 38 remaining human checklist items.            |
+| Submission validator       | `pnpm validate:submission` passed after deployment and reports 29 intentionally pending human checklist items.                                    |
 | Public repository          | GitHub reports `harsh-choksi/EvidenceGate` as `PUBLIC` with default branch `main`; an unauthenticated request returned `200` with `logged_in=no`. |
-| Verified code commit       | The clean clone and passing CI resolved to `06d1f9621a71712831b1656c8e15f027ab103611`; later status-only documentation does not alter that code.  |
-| Hosted CI                  | GitHub Actions CI passed on Ubuntu for the release-candidate commit.                                                                              |
+| Verified product merge     | Pull request [#1](https://github.com/harsh-choksi/EvidenceGate/pull/1) was squash-merged as `bd452a1f100c5da78f861b2f85d8bb763b552986`.           |
+| Hosted CI                  | [GitHub Actions run 29675001860](https://github.com/harsh-choksi/EvidenceGate/actions/runs/29675001860) passed on Windows, macOS, and Ubuntu.     |
+| Cross-platform artifacts   | CI downloaded all three demo artifacts and verified identical Fail and Pass bundle hashes before allowing deployment.                             |
+| Public judge site          | Signed-out checks opened the landing page and both reports at `https://harsh-choksi.github.io/EvidenceGate/`; deployed JSON hashes matched CI.    |
 
 The offline suite covers strict schemas and known-ID binding; canonical hashing; exact stored gate-policy inputs and full decision recomputation; cross-layer assessment consistency; bounded Git and command collection; secret redaction; exact source-plan/artifact binding and full-payload hashing; URL/domain/source-ID/citation/freshness/authority/conflict revalidation; criterion-specific cited-text semantics; Stage-B structured-output coverage, required candidate scopes, source-type-aware status validation, cross-binding, and bounded correction behavior; prompt injection; generic workflow orchestration; and escaped, link-safe static reporting.
 
@@ -33,7 +35,7 @@ The generated artifacts are written beneath `.evidencegate/demo/`:
 | Scenario                           | Gate | Bundle SHA-256                                                     |
 | ---------------------------------- | ---- | ------------------------------------------------------------------ |
 | `sourced-answer-incomplete-cached` | Fail | `3f7f66bef1f853761c629bfce3f86f60fbb5fcb8ee220fcaf25e12eef5c868a5` |
-| `sourced-answer-corrected-cached`  | Pass | `765307451d8994093925d5b4fadcd1d4a6c02c917a05bf6a19ee119758167675` |
+| `sourced-answer-corrected-cached`  | Pass | `41b7b0b10dbe046781441e45501326e9c2a1d1f06270362b477184278b62929f` |
 
 The corrected bundle contains 14 required criteria, 14 verified combined assessments, 2 validated source records, 2 native citation bindings, and 1 cached research run. It carries `deterministic-v2` plus the exact resolved gate-policy inputs. Its `modelRuns` list is empty because cached mode makes no model call.
 
@@ -67,7 +69,7 @@ Post-run structural QA found that the otherwise valid model-written research nar
 
 Release hardening also pins tracked text to LF for deterministic cross-platform fixtures, raises the declared Node.js floor to 20.12 because the live launcher uses `process.loadEnvFile`, and narrows the example OpenAI documentation policy to `developers.openai.com` and `platform.openai.com`.
 
-Human-exported Pass and Fail PDFs were inspected page by page after that structural QA. Their gate decisions, hashes, HTTPS links, fonts, tagging, and text extraction were correct, but the first exports failed release visual QA: low-contrast decision text, orphaned section headings, one source card per page, duplicate evidence rows, a misleading reconstructed citation-marker narrative, a near-blank footer-only page, and Chrome headers/footers exposing the local file path. Replacement exports resolved the body-layout defects, but all pages still contained Chrome's date/title, local `file:///C:/Users/...` path, and browser pagination. The replacement Fail PDF also exposed a report-summary undercount that omitted required partial/manual-review states; the metric now counts every required non-passing criterion and has a regression test. Another header/footer-free export and page-by-page inspection remain required before the PDF/report QA item can be marked complete.
+Human-exported Pass and Fail PDFs were inspected page by page after that structural QA. Their gate decisions, hashes, HTTPS links, fonts, tagging, and text extraction were correct, but the first exports failed release visual QA: low-contrast decision text, orphaned section headings, one source card per page, duplicate evidence rows, a misleading reconstructed citation-marker narrative, a near-blank footer-only page, and Chrome headers/footers exposing the local file path. Replacement exports resolved the body-layout defects, but all pages still contained Chrome's date/title, local `file:///C:/Users/...` path, and browser pagination. The replacement Fail PDF also exposed a report-summary undercount that omitted required partial/manual-review states; the metric now counts every required non-passing criterion and has a regression test. Those PDFs are excluded from publication. The deployed self-contained HTML reports and clean screenshot replace them, so another PDF export is necessary only if the entrant elects to submit a PDF.
 
 ## Public release-candidate verification
 
@@ -75,7 +77,9 @@ The repository is public at [github.com/harsh-choksi/EvidenceGate](https://githu
 
 The first hosted CI run exposed a portability defect hidden by local ignored build output: type-aware ESLint ran before four workspace packages had emitted their `dist` declarations, producing unresolved error types on a clean Ubuntu checkout. Commit `06d1f9621a71712831b1656c8e15f027ab103611` makes verification build those declarations before lint/typecheck and gives the standalone `lint` and `typecheck` commands the same clean-install bootstrap. The replacement [GitHub Actions CI run](https://github.com/harsh-choksi/EvidenceGate/actions/runs/29672620231) passed on Ubuntu.
 
-A separate Windows clone of the public repository at that exact commit completed the documented frozen-lockfile install, standalone lint, standalone strict typecheck, full `pnpm verify`, cached `pnpm demo`, and `pnpm validate:submission`. All 169 offline tests passed, the live-only test remained skipped, the cached Fail/Pass hashes matched the recorded values above, and Git status remained clean because build/demo output is ignored. This verifies the judge path on Windows and in hosted Ubuntu CI; it does not substitute for a manual macOS rehearsal.
+A separate Windows clone of the public repository at that exact commit completed the documented frozen-lockfile install, standalone lint, standalone strict typecheck, full `pnpm verify`, cached `pnpm demo`, and `pnpm validate:submission`. All 169 then-current offline tests passed, the live-only test remained skipped, the cached Fail/Pass hashes matched the then-recorded values, and Git status remained clean because build/demo output is ignored.
+
+Pull request [#1](https://github.com/harsh-choksi/EvidenceGate/pull/1) added the no-build site and a Windows/macOS/Ubuntu matrix. Its first run caught a Windows-only corrected-bundle hash even though each individual bundle verified. The analyzer was selecting the first matching source file in filesystem enumeration order. Evidence collection now sorts paths lexically, has a regression test, and CI downloads all three artifacts for an explicit hash comparison. The repaired PR and merged-main [run 29675001860](https://github.com/harsh-choksi/EvidenceGate/actions/runs/29675001860) passed 186 tests on every platform, matched both bundle hashes, built the sanitized Pages artifact, and deployed it. Signed-out browser checks verified the landing page, Fail and Pass reports, visible source links, and public JSON hashes.
 
 ## Security and licensing review
 
@@ -86,9 +90,7 @@ A separate Windows clone of the public repository at that exact commit completed
 
 ## Still open before submission
 
-- Run the separately gated opt-in live test file with an authorized `OPENAI_API_KEY`; ordinary CI must remain offline.
-- Perform a manual clean-clone rehearsal on macOS before making an unqualified three-platform portability claim.
-- Perform final interactive browser/print visual QA and capture any required screenshot.
+- Run the separately gated opt-in live test file and the final post-freeze packaged live smoke with an authorized `OPENAI_API_KEY`; ordinary CI must remain offline.
 - Recheck the official rules, FAQ/notices, eligibility, selected category, and actual Devpost form immediately before submission.
 - Record, upload, and signed-out-test the public video.
 - Capture and verify the primary Codex `/feedback` Session ID.

@@ -78,7 +78,7 @@ TypeScript, Node.js, pnpm workspaces, OpenAI Responses API, GPT-5.6, OpenAI web 
 
 - Repository URL: **https://github.com/harsh-choksi/EvidenceGate** (public and unauthenticated access verified)
 - Hosted no-build judge demo: **https://harsh-choksi.github.io/EvidenceGate/**
-- Supported platforms: **Windows, macOS, and Linux, contingent on the final three-platform CI run**
+- Supported platforms: **Windows, macOS, and Linux; install, verify, demo, and bundle checks passed on the final hosted three-platform matrix**
 - Public YouTube demo: **PENDING RECORDING/UPLOAD/SIGNED-OUT CHECK**
 - Primary Codex `/feedback` Session ID: **PENDING CAPTURE**
 - Eligibility/team confirmation: **PENDING ENTRANT REVIEW**
