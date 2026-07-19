@@ -6,9 +6,15 @@
 
 EvidenceGate is a local-first developer tool for evaluating a change against acceptance criteria using two deliberately separate evidence domains: what the repository and its executed checks demonstrate, and what authoritative external sources currently state. It is targeting the Developer Tools track of [OpenAI Build Week](https://openai.com/build-week/); the [submission draft](docs/DEVPOST_SUBMISSION_DRAFT.md) and status are tracked separately and do not imply submission.
 
+## Try the judge demo without installing
+
+Open the [hosted Fail-to-Pass judge demo](https://harsh-choksi.github.io/EvidenceGate/). It publishes two sanitized, self-contained cached reports and their verifiable JSON bundles. No account, API key, installation, or source rebuild is required. The page and reports label the fixture as cached; they never present it as live web research.
+
+![EvidenceGate judge demo showing an incomplete patch failing and a corrected patch passing](docs/assets/evidencegate-judge-demo.jpg)
+
 ## Demo report teaser
 
-The checked-in demo compares a plausible but incomplete sourced-answer patch with a corrected patch. This text preview mirrors the report's two-lane structure; it is not a fabricated screenshot.
+The packaged demo compares a plausible but incomplete sourced-answer patch with a corrected patch. This text preview mirrors the report's two-lane structure; the hosted demo above contains the actual generated reports.
 
 ```text
 Criterion: Display every web-derived citation as a visible, clickable link
@@ -74,7 +80,7 @@ On macOS or Linux, use the same commands with `cd EvidenceGate` and `npx` in pla
 npx.cmd --yes pnpm@11.9.0 demo
 ```
 
-The deterministic demo uses sanitized cached OpenAI response fixtures, labels them as cached, evaluates the incomplete and corrected patches, generates Fail and Pass reports, and prints the output paths. It writes each scenario to `.evidencegate/demo/<scenario>/report.html` and `.evidencegate/demo/<scenario>/evidence-bundle.json`. Cached fixtures are reproducibility aids, not live research.
+The deterministic demo uses sanitized cached OpenAI response fixtures, labels them as cached, evaluates the incomplete and corrected patches, generates Fail and Pass reports, and prints the output paths. It writes each scenario to `.evidencegate/demo/<scenario>/report.html` and `.evidencegate/demo/<scenario>/evidence-bundle.json`. Cached fixtures are reproducibility aids, not live research. `pnpm pages:build` packages the same verified outputs as the static GitHub Pages judge site and refuses artifacts containing secret-shaped values, local file URLs, or cross-platform user/runner paths.
 
 For a clean PDF export, disable the browser print dialog's **Headers and footers** option. Otherwise Chrome adds the local `file:///` report path and machine username to every page. Inspect the preview for orphaned headings or a footer-only final page before publishing it.
 
@@ -97,6 +103,8 @@ The packaged live demonstration deliberately configures no maximum source age fo
 ## OpenAI API configuration
 
 `OPENAI_API_KEY` is required only for live research and adjudication. `RUN_LIVE_OPENAI_TESTS=true` is also required for opt-in live tests, and `RUN_LIVE_OPENAI_ADJUDICATION=true` is required when constructing the adjudicator directly; the explicit `demo:live` command supplies its own opt-in. Ordinary tests and CI use sanitized fixtures. Product identity is configurable through `EVIDENCEGATE_PRODUCT_NAME` and `EVIDENCEGATE_TAGLINE`.
+
+For least privilege, use a dedicated OpenAI Project and a **Restricted** project key. Allow `Model capabilities: Request` and `Responses API: Write`, enable `gpt-5.6` in project Model Usage, and leave List models, Assistants, Threads, Files, Vector Stores, Prompts, Batch, Evals, Fine-tuning, Videos, and other unused resources at `None`. Web search runs inside the Responses request and does not require a separate published key permission. Never commit the key or add it to ordinary CI; revoke a temporary release-verification key after the live run.
 
 The default model is `gpt-5.6`. The live adapter uses the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses), the [`web_search` tool](https://developers.openai.com/api/docs/guides/tools-web-search), domain filters, and `include: ["web_search_call.action.sources"]`. See [OpenAI integration](docs/OPENAI_INTEGRATION.md) for the trust boundary and response-validation flow.
 

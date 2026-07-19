@@ -37,7 +37,7 @@ This checklist is intentionally conservative. A planned artifact is not complete
 
 ## README and repository access
 
-- [ ] README includes product/tagline, screenshot, problem, dual-evidence explanation, hybrid example, quick start, demo/live setup, API configuration, CLI, policies, citation integrity, architecture, security, privacy, limits, Codex/GPT-5.6/web-search use, testing, and license.
+- [x] README includes product/tagline, screenshot, problem, dual-evidence explanation, hybrid example, quick start, demo/live setup, API configuration, CLI, policies, citation integrity, architecture, security, privacy, limits, Codex/GPT-5.6/web-search use, testing, and license.
 - [x] README clearly documents where Codex accelerated work, where the entrant made key decisions, and how Codex and GPT-5.6 contributed.
 - [ ] README has exact setup, sample-data/fixtures, supported platform, and test instructions verified from a fresh clone.
 - [x] Final repository URL returns `200 OK` to an unauthenticated client with `logged_in=no`.
@@ -61,7 +61,9 @@ This checklist is intentionally conservative. A planned artifact is not complete
 
 Working copy: [Devpost submission draft](DEVPOST_SUBMISSION_DRAFT.md).
 
-- [ ] Project title and configurable tagline finalized without trademark/legal-availability claims.
+Draft `1103829-evidencegate` was created on 2026-07-19. Project overview and project details are saved; required personal/eligibility fields, the video URL, and the `/feedback` Session ID remain for the entrant.
+
+- [x] Project title and tagline saved without trademark/legal-availability claims.
 - [ ] Text description accurately explains features and functionality without unsupported claims.
 - [ ] Developer Tools track selected.
 - [ ] Repository URL entered.
@@ -79,6 +81,6 @@ Working copy: [Devpost submission draft](DEVPOST_SUBMISSION_DRAFT.md).
 - [ ] Compare final video behavior with the exact released code.
 - [x] Re-run secret/license/security scan and verify the public repository view.
 - [ ] User reviews Official Rules, submission form, all field text, repository access, and final public video.
-- [ ] Save draft early enough to recover from upload/form problems.
+- [x] Save draft early enough to recover from upload/form problems.
 - [ ] Manually submit before the internal target where possible.
 - [ ] Confirm Devpost submission receipt/status before the official deadline.
