@@ -1,6 +1,6 @@
 # Devpost submission draft
 
-This is an editable draft for human review. It is not a submission receipt, and the repository, video, Codex feedback ID, eligibility, and final form fields must be completed and verified by the entrant.
+This is an editable draft for human review. It is not a submission receipt, and the video, Codex feedback ID, eligibility, and final form fields must be completed and verified by the entrant.
 
 ## Project title
 
@@ -70,7 +70,7 @@ TypeScript, Node.js, pnpm workspaces, OpenAI Responses API, GPT-5.6, OpenAI web 
 
 ## Links and human-only fields
 
-- Repository URL: **PENDING PUBLICATION/ACCESS CHECK**
+- Repository URL: **https://github.com/harsh-choksi/EvidenceGate** (public and unauthenticated access verified)
 - Public YouTube demo: **PENDING RECORDING/UPLOAD/SIGNED-OUT CHECK**
 - Primary Codex `/feedback` Session ID: **PENDING CAPTURE**
 - Eligibility/team confirmation: **PENDING ENTRANT REVIEW**

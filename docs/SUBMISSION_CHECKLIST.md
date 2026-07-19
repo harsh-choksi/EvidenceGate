@@ -15,7 +15,7 @@ This checklist is intentionally conservative. A planned artifact is not complete
 ## Product and release
 
 - [ ] Working project installs and runs consistently on every claimed supported platform.
-- [ ] `pnpm format:check`, lint, strict typecheck, tests, and build pass from a clean checkout.
+- [x] `pnpm format:check`, lint, strict typecheck, tests, and build pass from a clean checkout.
 - [x] `pnpm demo` produces deterministic cached Fail and Pass reports and labels cached data.
 - [x] `pnpm demo:live` passes with GPT-5.6, OpenAI web search, official-domain filtering, returned sources, and native citations.
 - [x] Incomplete patch fails for the documented internal/external reasons.
@@ -40,8 +40,8 @@ This checklist is intentionally conservative. A planned artifact is not complete
 - [ ] README includes product/tagline, screenshot, problem, dual-evidence explanation, hybrid example, quick start, demo/live setup, API configuration, CLI, policies, citation integrity, architecture, security, privacy, limits, Codex/GPT-5.6/web-search use, testing, and license.
 - [x] README clearly documents where Codex accelerated work, where the entrant made key decisions, and how Codex and GPT-5.6 contributed.
 - [ ] README has exact setup, sample-data/fixtures, supported platform, and test instructions verified from a fresh clone.
-- [ ] Final repository URL opens from a signed-out/private browser as intended.
-- [ ] If public: relevant license is visible. If private: access shared with `testing@devpost.com` and `build-week-event@openai.com` and tested.
+- [x] Final repository URL returns `200 OK` to an unauthenticated client with `logged_in=no`.
+- [x] The public repository includes the MIT license.
 - [ ] Project/demo/test access remains free and unrestricted through the end of judging.
 - [ ] No uncommitted required file, broken link, placeholder URL, or local absolute path remains in judge-facing docs.
 
@@ -74,10 +74,10 @@ Working copy: [Devpost submission draft](DEVPOST_SUBMISSION_DRAFT.md).
 ## Final release protocol
 
 - [ ] Freeze major features; create final release/commit identifier.
-- [ ] Run fresh-clone install/demo/test rehearsal using only judge-facing instructions.
+- [x] Run fresh-clone install/demo/test rehearsal using only judge-facing instructions.
 - [ ] Run final live OpenAI smoke test and record time/model/source result without secrets.
 - [ ] Compare final video behavior with the exact released code.
-- [ ] Re-run secret/license/security scan and verify the public/private repository view.
+- [x] Re-run secret/license/security scan and verify the public repository view.
 - [ ] User reviews Official Rules, submission form, all field text, repository access, and final public video.
 - [ ] Save draft early enough to recover from upload/form problems.
 - [ ] Manually submit before the internal target where possible.
