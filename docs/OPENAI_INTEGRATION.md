@@ -1,10 +1,10 @@
 # OpenAI integration
 
-This document defines EvidenceGate's OpenAI boundary. It describes the implemented contract and required verification. A successful live API Fail-to-Pass smoke test was completed on 2026-07-18; see [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for the recorded command and bundle evidence.
+This document defines EvidenceGate's OpenAI boundary. It describes the implemented contract and required verification. A successful live API Fail-to-Pass smoke test using the `gpt-5.6` Sol alias was completed on 2026-07-18; the active default is now Terra and still requires a post-migration live run after API quota is restored. See [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for the recorded command and bundle evidence.
 
 ## Runtime role
 
-Current live mode uses `gpt-5.6` through the OpenAI Responses API for two separately bounded jobs:
+Current live mode defaults to `gpt-5.6-terra` through the OpenAI Responses API for two separately bounded jobs:
 
 1. **External research:** use an approved `web_search` plan to produce a cited narrative and native returned-source provenance.
 2. **Evidence adjudication:** map supplied criteria to bounded internal evidence and validated external source IDs using strict structured output.
@@ -22,7 +22,7 @@ const filters = {
 };
 
 await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-5.6-terra",
   input: approvedMinimalClaimQuery,
   tools: [
     {
@@ -46,7 +46,7 @@ OpenAI's official documentation recommends the Responses API for new projects an
 - [Migrate to the Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses)
 - [Web search](https://developers.openai.com/api/docs/guides/tools-web-search)
 - [Structured model outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
-- [GPT-5.6 Sol model](https://developers.openai.com/api/docs/models/gpt-5.6-sol)
+- [GPT-5.6 Terra model](https://developers.openai.com/api/docs/models/gpt-5.6-terra)
 
 ## Approval and privacy boundary
 
@@ -75,12 +75,13 @@ Copy `.env.example` to `.env` or set variables in the process environment:
 
 ```text
 OPENAI_API_KEY=                 # required for live calls only
+EVIDENCEGATE_OPENAI_MODEL=gpt-5.6-terra
 RUN_LIVE_OPENAI_TESTS=false    # must be true as well for live tests
 ```
 
 The API key must never be placed in task JSON, YAML configuration, search queries, fixtures, reports, or committed files. Prefer process environment injection or a local ignored `.env` file.
 
-Use a dedicated OpenAI Project and a **Restricted** project key for live verification. The minimum project-key permissions are `Model capabilities: Request` and `Responses API: Write`; `gpt-5.6` must be enabled in the project's Model Usage settings. `List models` and unused resources such as Assistants, Threads, Files, Vector Stores, Prompts, Batch, Evals, Fine-tuning, and Videos remain `None`. Web search is invoked within the Responses request and has no separate published key permission. Keep the key out of GitHub Actions, inject it only for the bounded live command, and revoke a temporary release key afterward.
+Use a dedicated OpenAI Project and a **Restricted** project key for live verification. The minimum project-key permissions are `Model capabilities: Request` and `Responses API: Write`; `gpt-5.6-terra` must be enabled in the project's Model Usage settings. `List models` and unused resources such as Assistants, Threads, Files, Vector Stores, Prompts, Batch, Evals, Fine-tuning, and Videos remain `None`. Web search is invoked within the Responses request and has no separate published key permission. Keep the key out of GitHub Actions, inject it only for the bounded live command, and revoke a temporary release key afterward.
 
 The default repository configuration is illustrated by `.evidencegate.example.yml`. For OpenAI product claims, the implementation's official-documentation preset allowlists `developers.openai.com` and `platform.openai.com`; callers can provide an explicit policy when another official host is required.
 
@@ -102,7 +103,8 @@ The live demo permits exactly one correction request when Stage B returns invali
 
 ## Verification checklist
 
-- [x] Confirm the configured account can call `gpt-5.6`.
+- [x] Confirm the configured account could call the `gpt-5.6` Sol alias on 2026-07-18.
+- [ ] Confirm the configured account can call `gpt-5.6-terra` after API quota is restored.
 - [x] Confirm one live Responses API `web_search` tool call.
 - [ ] Confirm search-source arrays and direct open/find action URLs are retained from completed `web_search_call` items.
 - [x] Confirm native citation annotations bind to returned sources.

@@ -15,6 +15,8 @@ Verified against the official documentation on **2026-07-18**:
 - Responses include a `web_search_call` output item and message output containing `url_citation` annotations. An annotation contains the cited URL/title and location range.
 - When web-derived results are shown to users, inline citations must be clearly visible and clickable.
 
+This baseline describes the recorded 2026-07-18 Sol-alias run and remains historical evidence. The active API default is now `gpt-5.6-terra`, which the current model catalog documents as supporting the Responses API, structured outputs, and web search. Terra requires a post-migration live verification after API quota is restored.
+
 See the official [Web search guide](https://developers.openai.com/api/docs/guides/tools-web-search). These facts are time-sensitive and must be rechecked before release.
 
 ## Source-search plan

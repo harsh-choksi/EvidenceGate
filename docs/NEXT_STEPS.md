@@ -15,6 +15,7 @@ This is a conservative backlog, not a completion report. Verified facts and comm
 ## Live OpenAI verification
 
 - [x] With an authorized key, run the packaged GPT-5.6 Responses API `demo:live` smoke workflow.
+- [ ] After API quota is restored, run the post-migration packaged and separate live checks with `gpt-5.6-terra` enabled in Project Model Usage.
 - [ ] Run the separately gated `packages/source-research/tests/openai-live.test.ts` test with both live opt-ins.
 - [x] Confirm a real `web_search` call and retained `web_search_call.action.sources` data.
 - [x] Confirm native citations bind to the same returned registry.

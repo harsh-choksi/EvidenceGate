@@ -8,7 +8,7 @@ import type {
   SourceSearchPlan,
 } from "./types.js";
 
-export const DEFAULT_OPENAI_RESEARCH_MODEL = "gpt-5.6";
+export const DEFAULT_OPENAI_RESEARCH_MODEL = "gpt-5.6-terra";
 export const OPENAI_WEB_SEARCH_SOURCE_INCLUDE = "web_search_call.action.sources" as const;
 
 export interface OpenAIWebSearchRequest {

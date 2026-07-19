@@ -23,8 +23,8 @@ EvidenceGate is a local-first TypeScript CLI that checks an AI-generated code ch
 - Captures a bounded real Git comparison and runs configured checks with timeouts, output limits, and secret redaction.
 - Classifies criteria into internal, external, and hybrid evidence domains.
 - Previews exact source-search claims, queries, domains, model, and privacy boundaries before approved network access.
-- Uses GPT-5.6 with OpenAI web search to collect a cited narrative, returned-source metadata, and native citation annotations.
-- Uses a separate strict GPT-5.6 structured-output stage in the live demo to map only supplied criteria, evidence IDs, and source IDs.
+- Uses GPT-5.6 Terra with OpenAI web search to collect a cited narrative, returned-source metadata, and native citation annotations.
+- Uses a separate strict GPT-5.6 Terra structured-output stage in the live demo to map only supplied criteria, evidence IDs, and source IDs.
 - Rejects fabricated IDs, unsafe or credential-bearing URLs, disallowed domains, malformed ranges, stale-only support, and forged stored gate decisions; prompt-injection text remains untrusted data and cannot authorize evidence or IDs.
 - Recomputes a deterministic gate and records a canonical SHA-256 hash over the complete evidence bundle.
 - Produces a standalone, printable HTML report with visible, clickable inline citations and full source cards.
@@ -68,11 +68,11 @@ Codex was the primary build collaborator for requirements decomposition, archite
 
 ## How GPT-5.6 and OpenAI web search are used
 
-Stage A performs approved, domain-bounded external research with `web_search` and retains native returned-source and citation provenance. Stage B receives bounded/redacted evidence and citation excerpts and returns strict structured assessments. Local schema, provenance, ID, freshness, and policy validation remains authoritative, and GPT-5.6 cannot directly set the release gate.
+Stage A performs approved, domain-bounded external research with `web_search` and retains native returned-source and citation provenance. Stage B receives bounded/redacted evidence and citation excerpts and returns strict structured assessments. Local schema, provenance, ID, freshness, and policy validation remains authoritative, and GPT-5.6 Terra cannot directly set the release gate.
 
 ## Technology
 
-TypeScript, Node.js, pnpm workspaces, OpenAI Responses API, GPT-5.6, OpenAI web search, Zod, Vitest, ESLint, Prettier, Git, and self-contained HTML/CSS reports.
+TypeScript, Node.js, pnpm workspaces, OpenAI Responses API, GPT-5.6 Terra, OpenAI web search, Zod, Vitest, ESLint, Prettier, Git, and self-contained HTML/CSS reports.
 
 ## Links and human-only fields
 

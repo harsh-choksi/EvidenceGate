@@ -5,7 +5,7 @@ import {
 } from "./adjudication-prompt.js";
 import type { AdjudicationInput } from "./types.js";
 
-export const DEFAULT_ADJUDICATION_MODEL = "gpt-5.6";
+export const DEFAULT_ADJUDICATION_MODEL = "gpt-5.6-terra";
 
 const SOURCE_TYPES = [
   "official_documentation",

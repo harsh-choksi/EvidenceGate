@@ -4,9 +4,9 @@ import { ADJUDICATION_SYSTEM_INSTRUCTIONS, buildAdjudicationRequest } from "../s
 import { VALID_ADJUDICATION_INPUT } from "./fixtures.js";
 
 describe("adjudication request", () => {
-  it("uses GPT-5.6 and strict Responses API structured output", () => {
+  it("uses GPT-5.6 Terra and strict Responses API structured output", () => {
     const request = buildAdjudicationRequest(VALID_ADJUDICATION_INPUT);
-    expect(request.model).toBe("gpt-5.6");
+    expect(request.model).toBe("gpt-5.6-terra");
     expect(request.instructions).toBe(ADJUDICATION_SYSTEM_INSTRUCTIONS);
     expect(request.instructions).toContain("Copy normalizedClaim byte-for-byte");
     expect(request.instructions).toContain("Judge internal status only against internalClaim");
@@ -53,7 +53,8 @@ describe("adjudication request", () => {
       message: `Correct ${secret}; ${"x".repeat(1_200)}`,
     }));
 
-    const request = buildAdjudicationRequest(VALID_ADJUDICATION_INPUT, "gpt-5.6", feedback);
+    const request = buildAdjudicationRequest(VALID_ADJUDICATION_INPUT, "gpt-5.6-sol", feedback);
+    expect(request.model).toBe("gpt-5.6-sol");
     const payload = JSON.parse(request.input) as {
       validationFeedback: Array<{ path: string; message: string }>;
     };
