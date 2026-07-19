@@ -37,10 +37,27 @@ jobs:
           name: evidencegate-demo-reports-${{ matrix.os }}
           path: .evidencegate/demo/
 
+  determinism:
+    name: Compare cross-platform artifacts
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: evidencegate-demo-reports-*
+          path: .evidencegate/cross-platform/
+      - run: node scripts/verify-cross-platform-demo.ts .evidencegate/cross-platform/
+
   pages-build:
     name: Build judge demo
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
-    needs: verify
+    needs: [verify, determinism]
     runs-on: ubuntu-latest
     permissions:
       contents: read

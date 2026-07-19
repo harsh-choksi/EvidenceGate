@@ -126,4 +126,23 @@ describe("sourced answer analyzer", () => {
       expect.objectContaining({ criterionId: "citation-annotations", status: "unsupported" }),
     );
   });
+
+  it("selects evidence files in deterministic lexical path order", () => {
+    const root = mkdtempSync(path.join(tmpdir(), "evidencegate-analyzer-order-"));
+    mkdirSync(path.join(root, "src"));
+    const matchingSource = `const returned = sourceRegistry.has(citation.url);`;
+    writeFileSync(path.join(root, "src", "z-registry.ts"), matchingSource);
+    writeFileSync(path.join(root, "src", "A-registry.ts"), matchingSource);
+
+    const result = analyzeSourcedAnswerRepository(root, [
+      { criterionId: "source-identifiers", text: "source identifiers", required: true },
+    ]);
+
+    expect(result.assessments[0]).toEqual(
+      expect.objectContaining({ criterionId: "source-identifiers", status: "verified" }),
+    );
+    expect(new Set(result.evidence.map((evidence) => evidence.path))).toEqual(
+      new Set(["src/A-registry.ts"]),
+    );
+  });
 });
