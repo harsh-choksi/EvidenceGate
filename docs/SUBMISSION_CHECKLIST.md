@@ -78,6 +78,9 @@ Draft `1103829-evidencegate` was created on 2026-07-19. Project overview and pro
 - [ ] Freeze major features; create final release/commit identifier.
 - [x] Run fresh-clone install/demo/test rehearsal using only judge-facing instructions.
 - [ ] Run final live OpenAI smoke test and record time/model/source result without secrets.
+
+  The 2026-07-19 post-freeze attempt reached OpenAI but returned `429 insufficient_quota` for both the packaged live demo and separate live test before research completed. Retry after restoring organization/project API quota or credits; do not tag this attempt.
+
 - [ ] Compare final video behavior with the exact released code.
 - [x] Re-run secret/license/security scan and verify the public repository view.
 - [ ] User reviews Official Rules, submission form, all field text, repository access, and final public video.

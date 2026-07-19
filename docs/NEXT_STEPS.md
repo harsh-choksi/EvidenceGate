@@ -25,6 +25,8 @@ This is a conservative backlog, not a completion report. Verified facts and comm
 
 Cached fixtures do not satisfy these live items.
 
+The 2026-07-19 post-freeze packaged smoke and separate source-research live test both reached OpenAI but returned `429 insufficient_quota` before research completed. Restore organization/project API quota or credits before a single bounded retry; this attempt does not complete either pending live item.
+
 ## Security and reliability
 
 - [x] Complete prompt-injection, fabricated-citation, URL/domain bypass, range, stale-source, and conflict tests.

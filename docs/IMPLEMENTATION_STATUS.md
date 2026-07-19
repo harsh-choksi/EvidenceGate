@@ -67,6 +67,8 @@ The seventh live run succeeded end to end in 107.3 seconds. One shared `gpt-5.6`
 
 Post-run structural QA found that the otherwise valid model-written research narrative used its own `PASS` heading, including inside the incomplete report whose deterministic gate was `Fail`. The report now labels all such prose as an untrusted external research narrative rather than a gate decision, and the Stage-A prompt explicitly forbids repository assessment and PASS/FAIL or release language. The HTML reports can be regenerated from the already verified live bundles without another network call; the prompt hardening is offline-tested and remains to be exercised by the final post-freeze live run.
 
+On 2026-07-19, the final post-freeze packaged live smoke and the separately gated source-research live test were attempted with process-scoped secrets and opt-ins. Both requests reached OpenAI but returned `429 insufficient_quota` before producing a research result. Neither attempt therefore satisfies the final live-release protocol. The `finally` cleanup removed the key and live-test variables, and no tag or GitHub release was created. Restore organization/project API quota or credits before one bounded retry.
+
 Release hardening also pins tracked text to LF for deterministic cross-platform fixtures, raises the declared Node.js floor to 20.12 because the live launcher uses `process.loadEnvFile`, and narrows the example OpenAI documentation policy to `developers.openai.com` and `platform.openai.com`.
 
 Human-exported Pass and Fail PDFs were inspected page by page after that structural QA. Their gate decisions, hashes, HTTPS links, fonts, tagging, and text extraction were correct, but the first exports failed release visual QA: low-contrast decision text, orphaned section headings, one source card per page, duplicate evidence rows, a misleading reconstructed citation-marker narrative, a near-blank footer-only page, and Chrome headers/footers exposing the local file path. Replacement exports resolved the body-layout defects, but all pages still contained Chrome's date/title, local `file:///C:/Users/...` path, and browser pagination. The replacement Fail PDF also exposed a report-summary undercount that omitted required partial/manual-review states; the metric now counts every required non-passing criterion and has a regression test. Those PDFs are excluded from publication. The deployed self-contained HTML reports and clean screenshot replace them, so another PDF export is necessary only if the entrant elects to submit a PDF.
@@ -90,7 +92,7 @@ Pull request [#1](https://github.com/harsh-choksi/EvidenceGate/pull/1) added the
 
 ## Still open before submission
 
-- Run the separately gated opt-in live test file and the final post-freeze packaged live smoke with an authorized `OPENAI_API_KEY`; ordinary CI must remain offline.
+- Restore organization/project OpenAI API quota or credits, then rerun the separately gated opt-in live test file and final post-freeze packaged live smoke with an authorized `OPENAI_API_KEY`; ordinary CI must remain offline.
 - Recheck the official rules, FAQ/notices, eligibility, selected category, and actual Devpost form immediately before submission.
 - Record, upload, and signed-out-test the public video.
 - Capture and verify the primary Codex `/feedback` Session ID.
