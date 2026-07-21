@@ -182,6 +182,7 @@ export const ExternalSourceRecordSchema = z
   .object({
     sourceId: IdentifierSchema,
     webSearchCallId: IdentifierSchema,
+    webSearchCallIds: z.array(IdentifierSchema).optional(),
     url: HttpUrlSchema,
     normalizedUrl: HttpUrlSchema,
     title: NonEmptyTextSchema,
@@ -202,6 +203,22 @@ export const ExternalSourceRecordSchema = z
   })
   .strict()
   .superRefine((source, context) => {
+    if (source.webSearchCallIds !== undefined) {
+      addDuplicateIssues(
+        source.webSearchCallIds,
+        context,
+        ["webSearchCallIds"],
+        "web-search call ID",
+      );
+      if (!source.webSearchCallIds.includes(source.webSearchCallId)) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "webSearchCallIds must include webSearchCallId",
+          path: ["webSearchCallIds"],
+        });
+      }
+    }
+
     let normalizedHostname: string | undefined;
     try {
       normalizedHostname = new URL(source.normalizedUrl).hostname;

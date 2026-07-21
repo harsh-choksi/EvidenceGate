@@ -9,6 +9,7 @@ import {
   deriveCombinedStatus,
   evaluateGate,
   resolveGatePolicy,
+  sha256Canonical,
   type CombinedClaimAssessment,
   type EvidenceItem,
   type ExternalClaimAssessment,
@@ -30,12 +31,32 @@ import {
 import { writeStaticReport, type StaticReportData } from "@evidencegate/report";
 import { runCommand, type CommandResult } from "@evidencegate/runner";
 import {
+  buildOpenAIWebSearchRequest,
   createOpenAIWebSearchProviderFromEnvironment,
-  createSourceSearchPlan,
   parseCachedOpenAIResearchResponse,
   type SourceResearchResult,
-  type SourceSearchPlan,
 } from "@evidencegate/source-research";
+import {
+  createDemoResearchCorpus,
+  demoFocusedSourceSearchPlan,
+  demoSourceSearchPlan,
+  hasCanonicalGuideCoverage,
+  hasCitationPresentationCoverage,
+  supportsCitationPresentationRequirement,
+  type DemoResearchCorpus,
+  type DemoResearchPass,
+} from "./demo-research.js";
+
+export {
+  createDemoResearchCorpus,
+  demoFocusedSourceSearchPlan,
+  demoSourceSearchPlan,
+  hasCanonicalGuideCoverage,
+  hasCitationPresentationCoverage,
+  supportsCitationPresentationRequirement,
+  type DemoResearchCorpus,
+  type DemoResearchPass,
+};
 
 export type DemoScenario = "incomplete" | "corrected";
 export type DemoSourceMode = "cached" | "live";
@@ -51,6 +72,8 @@ export interface DemoScenarioResult {
   reportPath: string;
   bundleHash: string;
   commandResult: CommandResult;
+  researchPassCount?: number;
+  canonicalGuideCoverage?: boolean;
   adjudicationAttemptCount?: number;
 }
 
@@ -123,38 +146,21 @@ export function demoOutputDirectory(scenario: DemoScenario, sourceMode: DemoSour
     : path.join(workspaceRoot, ".evidencegate", "demo", scenario);
 }
 
-function sourceSearchPlan(task: TaskSpecification, mode: DemoSourceMode): SourceSearchPlan {
-  return createSourceSearchPlan({
-    criterionId: externalCriterionIds[0]!,
-    externalClaim:
-      "The current OpenAI Responses API supports the web_search tool, official-domain filters, the consulted-source list through web_search_call.action.sources, URL citation annotations, and requires user-facing citations to be visible and clickable.",
-    productOrStandard: "OpenAI Responses API",
-    version: "current as of 2026-07-18",
-    dateSensitivity: "current API behavior",
-    requireUserApproval: true,
-    sourcePolicyOverrides: {
-      allowedDomains: ["developers.openai.com", "platform.openai.com"],
-      minimumSourceCount: 1,
-      // Responses web-search source metadata commonly omits publication dates
-      // for canonical documentation. Live mode records an explicit
-      // non-restrictive freshness policy instead of fabricating a source date.
-      maxSourceAgeDays: mode === "live" ? null : 30,
-    },
-    privateIdentifiers: [task.taskId],
-  });
-}
-
 async function collectResearch(
   mode: DemoSourceMode,
-  plan: SourceSearchPlan,
+  task: TaskSpecification,
   liveModel: string,
-): Promise<SourceResearchResult> {
+): Promise<DemoResearchCorpus> {
+  const primaryPlan = demoSourceSearchPlan(task, mode);
   if (mode === "cached") {
-    return parseCachedOpenAIResearchResponse(
+    const result = parseCachedOpenAIResearchResponse(
       readJson(path.join(workspaceRoot, "fixtures", "cached-openai-response.json")),
-      plan,
+      primaryPlan,
       { retrievedAt: cachedAt, model: "gpt-5.6 (cached fixture)", strict: true },
     );
+    return createDemoResearchCorpus([
+      { kind: "primary", criterionIds: externalCriterionIds, plan: primaryPlan, result },
+    ]);
   }
 
   const apiKey = process.env["OPENAI_API_KEY"];
@@ -163,10 +169,36 @@ async function collectResearch(
     { OPENAI_API_KEY: apiKey, RUN_LIVE_OPENAI_TESTS: "true" },
     { model: liveModel, throwOnCitationIntegrityFailure: true },
   );
-  return provider.research(plan, {
+  const primary = await provider.research(primaryPlan, {
     approved: true,
     signal: AbortSignal.timeout(90_000),
   });
+  const passes: DemoResearchPass[] = [
+    { kind: "primary", criterionIds: externalCriterionIds, plan: primaryPlan, result: primary },
+  ];
+  if (!hasCanonicalGuideCoverage(primary)) {
+    const focusedPlan = demoFocusedSourceSearchPlan(task);
+    let focused: SourceResearchResult;
+    try {
+      focused = await provider.research(focusedPlan, {
+        approved: true,
+        signal: AbortSignal.timeout(90_000),
+      });
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : "unknown provider failure";
+      throw new Error(
+        `Focused canonical-guide research failed after the primary pass lacked complete source-bound coverage: ${detail}`,
+        { cause: error },
+      );
+    }
+    passes.push({
+      kind: "focused-followup",
+      criterionIds: externalCriterionIds,
+      plan: focusedPlan,
+      result: focused,
+    });
+  }
+  return createDemoResearchCorpus(passes);
 }
 
 function scanFixture(repositoryRoot: string, task: TaskSpecification): RepositorySnapshot {
@@ -237,15 +269,22 @@ function toCoreSources(
       "official-domains": /domain filters?|allowed domains?|official documentation domains?/iu,
       "source-metadata": /source metadata|action\.sources|returned sources?/iu,
       "citation-annotations": /url citation annotations?|citation annotations?/iu,
-      "visible-citations": /\bvisible\b/iu,
-      "clickable-citations": /\bclickable\b/iu,
     };
-    const supports = externalCriterionIds.filter((criterionId) =>
-      supportPatterns[criterionId]?.test(sourceEvidence),
-    );
+    const supports = externalCriterionIds.filter((criterionId) => {
+      if (criterionId === "visible-citations") {
+        return supportsCitationPresentationRequirement(sourceEvidence, "visible");
+      }
+      if (criterionId === "clickable-citations") {
+        return supportsCitationPresentationRequirement(sourceEvidence, "clickable");
+      }
+      return supportPatterns[criterionId]?.test(sourceEvidence) ?? false;
+    });
     return {
       sourceId: source.sourceId,
       webSearchCallId: source.webSearchCallId,
+      ...(source.webSearchCallIds === undefined || source.webSearchCallIds.length <= 1
+        ? {}
+        : { webSearchCallIds: [...source.webSearchCallIds] }),
       url: source.url,
       normalizedUrl: source.normalizedUrl,
       title: source.title,
@@ -463,6 +502,7 @@ function buildAdjudicationInput(
   research: SourceResearchResult,
   internalEvidence: EvidenceItem[],
   sources: ExternalSourceRecord[],
+  candidateCriterionIdsBySourceId: ReadonlyMap<string, readonly string[]>,
 ): AdjudicationInput {
   return {
     researchNarrative: research.narrative,
@@ -493,10 +533,10 @@ function buildAdjudicationInput(
       );
       return {
         sourceId: source.sourceId,
-        // Stage A uses one explicitly bounded umbrella plan for these criteria.
-        // Candidate scope is broader than the provisional semantic support
-        // labels that Stage B must independently assess from citation excerpts.
-        criterionIds: [...externalCriterionIds],
+        // Candidate scope records which approved pass returned the source. It
+        // remains broader than the provisional semantic support labels that
+        // Stage B independently evaluates from source-bound excerpts.
+        criterionIds: [...(candidateCriterionIdsBySourceId.get(source.sourceId) ?? [])],
         url: source.normalizedUrl,
         title: source.title,
         domain: source.domain,
@@ -549,6 +589,7 @@ async function adjudicateEvidence(
   research: SourceResearchResult,
   internalEvidence: EvidenceItem[],
   sources: ExternalSourceRecord[],
+  candidateCriterionIdsBySourceId: ReadonlyMap<string, readonly string[]>,
   model: string,
 ): Promise<{
   assessments: {
@@ -561,7 +602,13 @@ async function adjudicateEvidence(
   const apiKey = process.env["OPENAI_API_KEY"];
   if (!apiKey) throw new Error("OPENAI_API_KEY is required for live evidence adjudication.");
 
-  const input = buildAdjudicationInput(task, research, internalEvidence, sources);
+  const input = buildAdjudicationInput(
+    task,
+    research,
+    internalEvidence,
+    sources,
+    candidateCriterionIdsBySourceId,
+  );
   const adjudicator = await createOpenAIEvidenceAdjudicatorFromEnvironment(
     { OPENAI_API_KEY: apiKey, RUN_LIVE_OPENAI_ADJUDICATION: "true" },
     { model, maxValidationRetries: 1 },
@@ -617,16 +664,26 @@ function displayGateStatus(status: string): string {
 export async function buildDemoScenario(
   scenario: DemoScenario,
   sourceMode: DemoSourceMode,
-  researchOverride?: SourceResearchResult,
+  researchOverride?: SourceResearchResult | DemoResearchCorpus,
   options: DemoRunOptions = {},
 ): Promise<DemoScenarioResult> {
   const task = TaskSpecificationSchema.parse(
     readJson(path.join(workspaceRoot, "fixtures", "demo-task.json")),
   );
-  const plan = sourceSearchPlan(task, sourceMode);
-  const research =
-    researchOverride ??
-    (await collectResearch(sourceMode, plan, options.model ?? DEFAULT_OPENAI_MODEL));
+  const corpus =
+    researchOverride === undefined
+      ? await collectResearch(sourceMode, task, options.model ?? DEFAULT_OPENAI_MODEL)
+      : "merged" in researchOverride
+        ? researchOverride
+        : createDemoResearchCorpus([
+            {
+              kind: "primary",
+              criterionIds: externalCriterionIds,
+              plan: demoSourceSearchPlan(task, sourceMode),
+              result: researchOverride,
+            },
+          ]);
+  const research = corpus.merged;
   const repositoryRoot = path.join(workspaceRoot, "fixtures", `${scenario}-patch`);
   const analysis = analyzeSourcedAnswerRepository(repositoryRoot, task.acceptanceCriteria);
   const commandResult = await executeFixtureTests(repositoryRoot, scenario);
@@ -648,6 +705,7 @@ export async function buildDemoScenario(
           research,
           internalEvidence,
           sources,
+          corpus.candidateCriterionIdsBySourceId,
           research.metadata.model,
         )
       : undefined;
@@ -686,19 +744,22 @@ export async function buildDemoScenario(
     modelRuns:
       sourceMode === "live"
         ? [
-            {
-              modelRunId: `model-run-${scenario}-research`,
-              criterionIds: [...externalCriterionIds],
-              purpose: "external_research",
-              model: research.metadata.model,
-              startedAt: research.metadata.startedAt,
-              completedAt: research.metadata.completedAt,
-              status: research.metadata.status,
-              ...(research.rawResponseId === undefined
+            ...corpus.passes.map((pass, index) => ({
+              modelRunId: `model-run-${scenario}-research-pass-${index + 1}`,
+              criterionIds: [...pass.criterionIds],
+              purpose: "external_research" as const,
+              model: pass.result.metadata.model,
+              startedAt: pass.result.metadata.startedAt,
+              completedAt: pass.result.metadata.completedAt,
+              status: pass.result.metadata.status,
+              ...(pass.result.rawResponseId === undefined
                 ? {}
-                : { responseId: research.rawResponseId }),
-              toolCallIds: [...research.metadata.webSearchCallIds],
-            },
+                : { responseId: pass.result.rawResponseId }),
+              inputHash: sha256Canonical(
+                buildOpenAIWebSearchRequest(pass.plan, pass.result.metadata.model),
+              ),
+              toolCallIds: [...pass.result.metadata.webSearchCallIds],
+            })),
             ...adjudication!.modelRuns,
           ]
         : [],
@@ -805,6 +866,8 @@ export async function buildDemoScenario(
     reportPath,
     bundleHash: bundle.bundleHash,
     commandResult,
+    researchPassCount: corpus.passes.length,
+    canonicalGuideCoverage: hasCanonicalGuideCoverage(research),
     ...(adjudication === undefined
       ? {}
       : { adjudicationAttemptCount: adjudication.modelRuns.length }),
@@ -818,13 +881,9 @@ export async function runFailToPassDemo(
   const task = TaskSpecificationSchema.parse(
     readJson(path.join(workspaceRoot, "fixtures", "demo-task.json")),
   );
-  const research = await collectResearch(
-    sourceMode,
-    sourceSearchPlan(task, sourceMode),
-    options.model ?? DEFAULT_OPENAI_MODEL,
-  );
-  const incomplete = await buildDemoScenario("incomplete", sourceMode, research);
-  const corrected = await buildDemoScenario("corrected", sourceMode, research);
+  const corpus = await collectResearch(sourceMode, task, options.model ?? DEFAULT_OPENAI_MODEL);
+  const incomplete = await buildDemoScenario("incomplete", sourceMode, corpus);
+  const corrected = await buildDemoScenario("corrected", sourceMode, corpus);
   if (incomplete.gateStatus !== "fail") {
     throw new Error(demoInvariantErrorMessage(incomplete, "fail"));
   }
@@ -846,6 +905,11 @@ export function demoInvariantErrorMessage(
     result.gateSummary,
     `Non-passing criteria: ${criteria}.`,
     `Gate reasons: ${reasons}.`,
+    ...(result.canonicalGuideCoverage === false
+      ? [
+          `Single-guide umbrella coverage (non-gating) remained incomplete after ${result.researchPassCount ?? 0} research pass(es).`,
+        ]
+      : []),
     `Bundle: ${result.bundlePath}`,
     `Report: ${result.reportPath}`,
   ].join(" ");

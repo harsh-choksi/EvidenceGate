@@ -232,12 +232,17 @@ function validateBundleIntegrity(bundle: BundleIntegrityInput, context: z.Refine
   });
 
   bundle.externalSources.forEach((source, sourceIndex) => {
-    validateReference(
-      source.webSearchCallId,
-      knownWebSearchCalls,
-      context,
-      ["externalSources", sourceIndex, "webSearchCallId"],
-      "web-search call ID",
+    const sourceCallIds = source.webSearchCallIds ?? [source.webSearchCallId];
+    sourceCallIds.forEach((callId, callIndex) =>
+      validateReference(
+        callId,
+        knownWebSearchCalls,
+        context,
+        source.webSearchCallIds === undefined
+          ? ["externalSources", sourceIndex, "webSearchCallId"]
+          : ["externalSources", sourceIndex, "webSearchCallIds", callIndex],
+        "web-search call ID",
+      ),
     );
     source.claimsSupported.forEach((criterionId, criterionIndex) =>
       validateReference(
@@ -549,7 +554,9 @@ function validateBundleIntegrity(bundle: BundleIntegrityInput, context: z.Refine
     );
 
     const sourcesForRun = bundle.externalSources.filter((source) =>
-      run.webSearchCallIds.includes(source.webSearchCallId),
+      (source.webSearchCallIds ?? [source.webSearchCallId]).some((callId) =>
+        run.webSearchCallIds.includes(callId),
+      ),
     );
     const citationsForRun = sourcesForRun.reduce(
       (count, source) => count + source.citationAnnotations.length,
@@ -571,6 +578,7 @@ function validateBundleIntegrity(bundle: BundleIntegrityInput, context: z.Refine
     }
   });
 
+  const externalResearchToolCallOwners = new Map<string, number>();
   bundle.modelRuns.forEach((run, index) => {
     run.criterionIds.forEach((id, idIndex) =>
       validateReference(
@@ -581,6 +589,28 @@ function validateBundleIntegrity(bundle: BundleIntegrityInput, context: z.Refine
         "criterion ID",
       ),
     );
+
+    if (run.purpose === "external_research") {
+      run.toolCallIds.forEach((toolCallId, toolCallIndex) => {
+        validateReference(
+          toolCallId,
+          knownWebSearchCalls,
+          context,
+          ["modelRuns", index, "toolCallIds", toolCallIndex],
+          "web-search call ID",
+        );
+        const previousOwner = externalResearchToolCallOwners.get(toolCallId);
+        if (previousOwner !== undefined && previousOwner !== index) {
+          context.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `External-research tool-call ID is already assigned to modelRuns[${previousOwner}]: ${toolCallId}`,
+            path: ["modelRuns", index, "toolCallIds", toolCallIndex],
+          });
+        } else {
+          externalResearchToolCallOwners.set(toolCallId, index);
+        }
+      });
+    }
   });
 
   const gateCriterionIds = bundle.gate.criterionResults.map((result) => result.criterionId);

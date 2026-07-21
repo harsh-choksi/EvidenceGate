@@ -77,9 +77,9 @@ Draft `1103829-evidencegate` was created on 2026-07-19. Project overview and pro
 
 - [ ] Freeze major features; create final release/commit identifier.
 - [x] Run fresh-clone install/demo/test rehearsal using only judge-facing instructions.
-- [ ] Run final live OpenAI smoke test and record time/model/source result without secrets.
+- [x] Run final live OpenAI smoke test and record time/model/source result without secrets.
 
-  The 2026-07-19 post-freeze attempt reached OpenAI but returned `429 insufficient_quota` for both the packaged live demo and separate live test before research completed. Retry after restoring organization/project API quota or credits; do not tag this attempt.
+  Exact runtime commit `e54e855` completed the Terra workflow on 2026-07-21 in 63.2 seconds with one research pass, four Web Search calls, 24 current allowed official sources, six bound citations, complete non-gating single-guide coverage, and one adjudication per scenario. The incomplete scenario failed with bundle hash `7f49f5b3b5bb23a70a8d52539adbab239932fdf343b988bd9ba021d03d31d14f`; the corrected scenario passed with hash `3242c7ba7249b2fcab2631ae4ecc41677c2e860376f6df6c1b7780c177ae9b61`. Both bundles independently verified, artifact scans found no secret or local-path markers, and process cleanup removed the API key.
 
 - [ ] Compare final video behavior with the exact released code.
 - [x] Re-run secret/license/security scan and verify the public repository view.

@@ -21,14 +21,17 @@ describe("OpenAI web-search provider", () => {
     const request = buildOpenAIWebSearchRequest(plan);
     expect(request).toMatchObject({
       model: "gpt-5.6-terra",
+      reasoning: { effort: "medium" },
       tools: [
         {
           type: "web_search",
+          search_context_size: "high",
           filters: {
             allowed_domains: ["developers.openai.com", "platform.openai.com"],
           },
         },
       ],
+      tool_choice: "required",
       include: ["web_search_call.action.sources"],
     });
     expect(request.input).toContain(
@@ -37,6 +40,15 @@ describe("OpenAI web-search provider", () => {
     expect(request.input).toContain(
       "Do not assess repository implementation, assign PASS or FAIL, or make a release or gate decision.",
     );
+    expect(request.input).toContain(
+      "Attempt every listed query before concluding that the external claim is unsupported.",
+    );
+    expect(request.input).toContain("use web search open_page and find_in_page");
+    expect(request.input).toContain("exact page before concluding the claim is unsupported");
+    expect(request.input).toContain(
+      "Do not substitute generic model, overview, or quickstart pages",
+    );
+    expect(request.input).toContain("state each requested fact separately");
     expect(request.input).toContain(
       "Do not spell out raw URLs or Markdown link syntax in the narrative.",
     );
@@ -49,7 +61,11 @@ describe("OpenAI web-search provider", () => {
       allowedDomains: [],
       blockedDomains: [],
     });
-    expect(unrestrictedRequest.tools[0]).toEqual({ type: "web_search" });
+    expect(unrestrictedRequest.tools[0]).toEqual({
+      type: "web_search",
+      search_context_size: "high",
+    });
+    expect("filters" in unrestrictedRequest.tools[0]).toBe(false);
 
     const blockedRequest = buildOpenAIWebSearchRequest({
       ...plan,
@@ -58,6 +74,7 @@ describe("OpenAI web-search provider", () => {
     });
     expect(blockedRequest.tools[0]).toEqual({
       type: "web_search",
+      search_context_size: "high",
       filters: { blocked_domains: ["example.com"] },
     });
   });
