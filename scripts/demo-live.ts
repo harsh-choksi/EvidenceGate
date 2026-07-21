@@ -26,6 +26,10 @@ async function main(): Promise<void> {
   const results = await runFailToPassDemo("live", { model: liveModel });
   for (const result of results) {
     console.log(`${result.scenario.toUpperCase()} PATCH · gate ${result.gateStatus.toUpperCase()}`);
+    console.log(`  Research passes: ${result.researchPassCount ?? 0}`);
+    console.log(
+      `  Single-guide umbrella coverage (non-gating): ${result.canonicalGuideCoverage === true ? "complete" : "incomplete"}`,
+    );
     console.log(`  Adjudication attempts: ${result.adjudicationAttemptCount ?? 0}`);
     console.log(`  Report: ${result.reportPath}`);
     console.log(`  Bundle: ${result.bundlePath}`);

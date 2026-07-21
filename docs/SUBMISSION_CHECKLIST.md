@@ -79,7 +79,7 @@ Draft `1103829-evidencegate` was created on 2026-07-19. Project overview and pro
 - [x] Run fresh-clone install/demo/test rehearsal using only judge-facing instructions.
 - [ ] Run final live OpenAI smoke test and record time/model/source result without secrets.
 
-  The 2026-07-19 post-freeze attempt reached OpenAI but returned `429 insufficient_quota` for both the packaged live demo and separate live test before research completed. Retry after restoring organization/project API quota or credits; do not tag this attempt.
+  A bounded Terra run succeeded on 2026-07-20 in 79.3 seconds: the incomplete scenario failed with bundle hash `cd52a9ba91c6633c892b5701368bac4c0d2c7ec30e91c999b5bde3936007b2b6`, and the corrected scenario passed with hash `2c2ca50e90c4d8a6550c352de37fc674a83363d46a44f8f7aeb4ed6a69b29171`. Both bundles independently verified. A detector-only canonical-URL/wording normalization was committed afterward, so run the exact release head once before checking this item, tagging, or recording the final video.
 
 - [ ] Compare final video behavior with the exact released code.
 - [x] Re-run secret/license/security scan and verify the public repository view.

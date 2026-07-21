@@ -367,4 +367,41 @@ describe("static report", () => {
     expect(html).toContain("1 required non-passing");
     expect(html).not.toContain("2 required non-passing");
   });
+
+  it("distinguishes unsupported authority evidence from an inapplicable lane", () => {
+    const baseCriterion = {
+      criterionId: "criterion_1",
+      text: "Verify one behavior.",
+      required: true,
+      internalStatus: "verified" as const,
+      internalEvidence: [],
+      sourceIds: [],
+      missingEvidence: [],
+      explanation: "Evidence status is shown accurately.",
+      severity: "medium" as const,
+    };
+    const html = renderStaticReport(
+      buildData({
+        criteria: [
+          {
+            ...baseCriterion,
+            evidenceDomain: "hybrid" as const,
+            externalStatus: "not_supported" as const,
+            combinedStatus: "unsupported" as const,
+          },
+          {
+            ...baseCriterion,
+            criterionId: "criterion_2",
+            evidenceDomain: "internal" as const,
+            externalStatus: "not_applicable" as const,
+            combinedStatus: "verified" as const,
+          },
+        ],
+      }),
+    );
+
+    expect(html).toContain("No supporting authority source was cited");
+    expect(html).toContain("Authority evidence is not applicable to this criterion");
+    expect(html).not.toContain("No external source required or available");
+  });
 });

@@ -9,7 +9,7 @@ Target: **2 minutes 50 seconds**. The official submission video must be less tha
 - From Windows PowerShell, install with `npx.cmd --yes pnpm@11.9.0 install --frozen-lockfile`. On macOS or Linux, use `npx` in place of `npx.cmd`.
 - Before recording, inject `OPENAI_API_KEY` only for the secure pre-run, remove it in a `finally` block, and confirm `Test-Path Env:OPENAI_API_KEY` returns `False`. The recorded take uses the already-generated artifacts with no API key present; never show the value.
 - Open the hosted cached judge demo before recording and retain the local reports as a backup.
-- Pre-run the final live workflow before recording. The verified run took about 107 seconds, so show its already-generated artifacts during the timed segment; do not imply that a fresh live call completes in 25 seconds. If cached results must be used, label them visibly and narrate them as cached—never imply a live call.
+- Pre-run the exact release-head live workflow before recording. The latest verified two-pass Terra run took 79.3 seconds, but network/model timing varies; show its already-generated artifacts during the timed segment and do not imply that a fresh live call completes inside the video. If cached results must be used, label them visibly and narrate them as cached—never imply a live call.
 - Hide API keys, account details, notifications, private tabs, tokens, and local usernames.
 - When exporting a report to PDF, disable browser **Headers and footers** so the local `file:///` path and username are not printed; reject any preview with orphaned section headings or a footer-only final page.
 - Ensure source links open safely and that no third-party copyrighted music/material appears.
@@ -41,7 +41,7 @@ Open `.evidencegate/demo/incomplete/report.html`. Show the bounded repository fi
 
 **Run/show:**
 
-Show the terminal summary and reports from the final pre-recorded `demo:live` run. Briefly display the exact command, but do not rerun the 107-second workflow inside the under-three-minute take.
+Show the terminal summary and reports from the final pre-recorded `demo:live` run. Briefly display the exact command, but do not rerun the variable-duration live workflow inside the under-three-minute take.
 
 Running `demo:live` before recording is the explicit approval for this packaged, domain-bounded live workflow. Open `.evidencegate/demo/live/incomplete/report.html`; show the exact normalized claim, official OpenAI domain restrictions, privacy summary, live label, native returned source records, and visible clickable citations to the current official web-search documentation. Do not substitute a direct `sources check` command here: that lower-level command requires a prepared task/configuration and `--approve`.
 

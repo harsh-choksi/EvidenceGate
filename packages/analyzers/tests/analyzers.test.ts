@@ -50,17 +50,36 @@ describe("sourced answer analyzer", () => {
       { criterionId: "official-domains", text: "official domains", required: true },
       { criterionId: "source-metadata", text: "source metadata", required: true },
       { criterionId: "visible-citations", text: "visible citations", required: true },
+      { criterionId: "clickable-citations", text: "clickable citations", required: true },
     ]);
     expect(result.assessments).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ criterionId: "official-domains", status: "verified" }),
         expect.objectContaining({ criterionId: "source-metadata", status: "verified" }),
         expect.objectContaining({ criterionId: "visible-citations", status: "verified" }),
+        expect.objectContaining({ criterionId: "clickable-citations", status: "verified" }),
       ]),
     );
     expect(
       result.evidence.filter((evidence) => evidence.criterionId === "visible-citations"),
     ).toEqual(expect.arrayContaining([expect.objectContaining({ path: "src/Citations.tsx" })]));
+  });
+
+  it("does not accept an unrelated anchor as a clickable citation", () => {
+    const root = mkdtempSync(path.join(tmpdir(), "evidencegate-analyzer-link-negative-"));
+    mkdirSync(path.join(root, "src"));
+    writeFileSync(
+      path.join(root, "src", "Navigation.tsx"),
+      `export function Navigation() { return <a href="/docs">Documentation</a>; }`,
+    );
+
+    const result = analyzeSourcedAnswerRepository(root, [
+      { criterionId: "clickable-citations", text: "clickable citations", required: true },
+    ]);
+
+    expect(result.assessments[0]).toEqual(
+      expect.objectContaining({ criterionId: "clickable-citations", status: "unsupported" }),
+    );
   });
 
   it("does not treat returnedSources or a broad openai.com allowlist as complete evidence", () => {

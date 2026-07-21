@@ -15,8 +15,9 @@ This is a conservative backlog, not a completion report. Verified facts and comm
 ## Live OpenAI verification
 
 - [x] With an authorized key, run the packaged GPT-5.6 Responses API `demo:live` smoke workflow.
-- [ ] After API quota is restored, run the post-migration packaged and separate live checks with `gpt-5.6-terra` enabled in Project Model Usage.
-- [ ] Run the separately gated `packages/source-research/tests/openai-live.test.ts` test with both live opt-ins.
+- [x] Rerun the packaged live check once with the bounded, claim-focused Terra research follow-up enabled; the 2026-07-20 run completed Fail-to-Pass in 79.3 seconds.
+- [ ] Rerun the exact branch head once after the detector-only canonical-URL/wording normalization, before creating the final tag or recording the release video.
+- [x] Run the separately gated `packages/source-research/tests/openai-live.test.ts` test with both live opt-ins; it passed with Terra on 2026-07-20.
 - [x] Confirm a real `web_search` call and retained `web_search_call.action.sources` data.
 - [x] Confirm native citations bind to the same returned registry.
 - [ ] Inspect the live report's visible/clickable citations interactively in a browser and print preview.
@@ -26,7 +27,7 @@ This is a conservative backlog, not a completion report. Verified facts and comm
 
 Cached fixtures do not satisfy these live items.
 
-The 2026-07-19 post-freeze packaged smoke and separate source-research live test both reached OpenAI but returned `429 insufficient_quota` before research completed. Restore organization/project API quota or credits before a single bounded retry; this attempt does not complete either pending live item.
+The 2026-07-19 post-freeze attempts returned `429 insufficient_quota`, but quota was subsequently available. The separate Terra source-research test passed, and the bounded two-pass packaged run then produced an incomplete-scenario Fail and corrected-scenario Pass with independently verified bundles. The run remains valid gate evidence. Because a non-gating coverage detector was normalized afterward to recognize an official redirect URL and the word `requires`, the remaining live item is an exact-head release smoke check, not another key/quota or gate repair.
 
 ## Security and reliability
 
@@ -41,7 +42,7 @@ The 2026-07-19 post-freeze packaged smoke and separate source-research live test
 
 - [x] Reconcile the judge-facing README and recording commands with the implemented package scripts and CLI help.
 - [x] Add a real final judge-site screenshot after visual review; retain the text evidence example for accessibility and context.
-- [x] Rehearse the cached and live demo paths without manual data editing; the final post-freeze live rerun remains separate.
+- [x] Rehearse the cached and live demo paths without manual data editing; the exact-head release smoke remains separate from the completed two-pass Terra evidence run.
 - [x] Update [CODEX_USAGE.md](CODEX_USAGE.md) from actual sessions and retain public commit/CI evidence.
 - [ ] Keep cached/live labels visible in terminal, report, narration, and screenshots.
 

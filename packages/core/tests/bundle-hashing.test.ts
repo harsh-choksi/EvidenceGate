@@ -79,6 +79,99 @@ describe("bundle reference integrity", () => {
   });
 });
 
+describe("research provenance integrity", () => {
+  function externalResearchRun(
+    modelRunId: string,
+    toolCallIds: string[],
+  ): ReturnType<typeof makeUnsignedBundle>["modelRuns"][number] {
+    return {
+      modelRunId,
+      criterionIds: ["criterion-1"],
+      purpose: "external_research",
+      model: "gpt-5.6-terra",
+      startedAt: "2026-07-18T06:00:00.000Z",
+      completedAt: "2026-07-18T06:00:01.000Z",
+      status: "completed",
+      toolCallIds,
+    };
+  }
+
+  it("accepts legacy single-call sources without webSearchCallIds", () => {
+    const bundle = createEvidenceBundle(makeUnsignedBundle());
+
+    expect(bundle.externalSources[0]?.webSearchCallId).toBe("search-call-1");
+    expect(bundle.externalSources[0]?.webSearchCallIds).toBeUndefined();
+    expect(parseEvidenceBundle(bundle).bundleHash).toBe(bundle.bundleHash);
+  });
+
+  it("binds one deduplicated source to every research run that returned it", () => {
+    const unsigned = makeUnsignedBundle();
+    unsigned.externalSources[0]!.webSearchCallIds = ["search-call-1", "search-call-2"];
+    unsigned.researchRuns.push({
+      ...structuredClone(unsigned.researchRuns[0]!),
+      researchRunId: "research-run-2",
+      webSearchCallIds: ["search-call-2"],
+    });
+    unsigned.modelRuns = [
+      externalResearchRun("model-run-research-1", ["search-call-1"]),
+      externalResearchRun("model-run-research-2", ["search-call-2"]),
+    ];
+
+    const bundle = createEvidenceBundle(unsigned);
+
+    expect(bundle.externalSources[0]?.webSearchCallIds).toEqual(["search-call-1", "search-call-2"]);
+    expect(bundle.researchRuns).toHaveLength(2);
+    expect(verifyBundleHash(bundle)).toBe(true);
+  });
+
+  it("rejects duplicate source web-search call IDs", () => {
+    const unsigned = makeUnsignedBundle();
+    unsigned.externalSources[0]!.webSearchCallIds = ["search-call-1", "search-call-1"];
+
+    expect(() => createEvidenceBundle(unsigned)).toThrow(/duplicate web-search call ID/i);
+  });
+
+  it("requires source webSearchCallIds to contain the singular primary call ID", () => {
+    const unsigned = makeUnsignedBundle();
+    unsigned.researchRuns[0]!.webSearchCallIds.push("search-call-2");
+    unsigned.externalSources[0]!.webSearchCallIds = ["search-call-2"];
+
+    expect(() => createEvidenceBundle(unsigned)).toThrow(
+      /webSearchCallIds must include webSearchCallId/i,
+    );
+  });
+
+  it("rejects unknown source web-search call IDs", () => {
+    const unsigned = makeUnsignedBundle();
+    unsigned.externalSources[0]!.webSearchCallIds = ["search-call-1", "search-call-unknown"];
+
+    expect(() => createEvidenceBundle(unsigned)).toThrow(
+      /unknown web-search call ID: search-call-unknown/i,
+    );
+  });
+
+  it("rejects unknown tool calls on external-research model runs", () => {
+    const unsigned = makeUnsignedBundle();
+    unsigned.modelRuns = [externalResearchRun("model-run-research-1", ["search-call-unknown"])];
+
+    expect(() => createEvidenceBundle(unsigned)).toThrow(
+      /unknown web-search call ID: search-call-unknown/i,
+    );
+  });
+
+  it("rejects a tool call shared by external-research model runs", () => {
+    const unsigned = makeUnsignedBundle();
+    unsigned.modelRuns = [
+      externalResearchRun("model-run-research-1", ["search-call-1"]),
+      externalResearchRun("model-run-research-2", ["search-call-1"]),
+    ];
+
+    expect(() => createEvidenceBundle(unsigned)).toThrow(
+      /external-research tool-call ID is already assigned/i,
+    );
+  });
+});
+
 describe("semantic gate integrity", () => {
   it("rejects a forged pass even when the attacker recomputes the bundle hash", () => {
     const passingGate = structuredClone(makeUnsignedBundle().gate);

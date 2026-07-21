@@ -104,7 +104,8 @@ const RULES: CriterionRule[] = [
   {
     criterionId: "clickable-citations",
     description: "Citations render as anchors with a source URL.",
-    patterns: [/<a\s+[^>]*href=/u],
+    patterns: [/citations\.map\s*\(/u, /href\s*=\s*\{\s*citation\.url\s*\}/u],
+    minimumMatches: 2,
   },
   {
     criterionId: "url-schemes",

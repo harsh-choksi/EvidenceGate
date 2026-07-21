@@ -264,6 +264,10 @@ function renderCriteriaRows(data: StaticReportData): string {
             )
             .join("")
         : '<li class="empty">No supporting repository evidence</li>';
+      const emptySourceMessage =
+        criterion.externalStatus === "not_applicable"
+          ? "Authority evidence is not applicable to this criterion"
+          : "No supporting authority source was cited";
       const sources = criterion.sourceIds.length
         ? criterion.sourceIds
             .map((id) => {
@@ -273,7 +277,7 @@ function renderCriteriaRows(data: StaticReportData): string {
                 : `<li class="bad-link">Unknown source ID: ${escapeHtml(id)}</li>`;
             })
             .join("")
-        : '<li class="empty">No external source required or available</li>';
+        : `<li class="empty">${emptySourceMessage}</li>`;
       const missing = criterion.missingEvidence.length
         ? `<div class="missing"><strong>Missing</strong>${criterion.missingEvidence.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}</div>`
         : "";

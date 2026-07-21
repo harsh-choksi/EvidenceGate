@@ -1,6 +1,6 @@
 # OpenAI integration
 
-This document defines EvidenceGate's OpenAI boundary. It describes the implemented contract and required verification. A successful live API Fail-to-Pass smoke test using the `gpt-5.6` Sol alias was completed on 2026-07-18; the active default is now Terra and still requires a post-migration live run after API quota is restored. See [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for the recorded command and bundle evidence.
+This document defines EvidenceGate's OpenAI boundary. It describes the implemented contract and required verification. A successful live API Fail-to-Pass smoke test using the historical `gpt-5.6` Sol alias was completed on 2026-07-18. The active Terra default has now passed both its separate live source-research test and a bounded two-pass packaged Fail-to-Pass workflow. A detector-only canonical-URL/wording normalization followed the packaged run, so one exact-head live smoke remains before final release capture. See [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for the recorded command and bundle evidence.
 
 ## Runtime role
 
@@ -23,13 +23,16 @@ const filters = {
 
 await client.responses.create({
   model: "gpt-5.6-terra",
+  reasoning: { effort: "medium" },
   input: approvedMinimalClaimQuery,
   tools: [
     {
       type: "web_search",
+      search_context_size: "high",
       ...(Object.keys(filters).length > 0 ? { filters } : {}),
     },
   ],
+  tool_choice: "required",
   include: ["web_search_call.action.sources"],
 });
 ```
@@ -91,7 +94,7 @@ The default repository configuration is illustrated by `.evidencegate.example.ym
 
 Live tests require both `OPENAI_API_KEY` and `RUN_LIVE_OPENAI_TESTS=true`. Ordinary CI must stay offline.
 
-Direct use of the adjudicator environment factory additionally requires `RUN_LIVE_OPENAI_ADJUDICATION=true`. The explicit `pnpm demo:live` command supplies that adjudication opt-in internally because invoking the command is already an affirmative live action. The shared research request has a 90-second bound. Each scenario's initial adjudication and possible correction share a separate 90-second bound. A normal run makes three API calls; both adjudications needing correction raises the maximum to five.
+Direct use of the adjudicator environment factory additionally requires `RUN_LIVE_OPENAI_ADJUDICATION=true`. The explicit `pnpm demo:live` command supplies that adjudication opt-in internally because invoking the command is already an affirmative live action. The shared primary research request has a 90-second bound. If its validated, source-bound canonical-guide contexts do not cover domain filtering, consulted-source metadata, URL citation annotations, and the current visible-and-clickable requirement, the packaged demo permits exactly one separately bounded focused research request against the canonical guide with its audited legacy URL as an equivalent fallback. It never issues a third research request and never retries because Stage B or the gate disagrees. The source records and rebased native citation ranges are normalized into one aggregate research run, while each provider response retains its own model-run response ID, exact tool-call IDs, timestamps, criterion scope, and input hash. Deduplicated sources also retain every associated Web Search call ID, and exact plan/result metadata binding is validated before provenance is emitted. Each scenario's initial adjudication and possible correction share a separate 90-second bound. A normal run makes three API calls when the primary response is complete or four when the focused pass is needed; the hard maximum is six when both adjudications also need correction.
 
 The packaged live demo applies an explicit no-maximum-age policy to canonical OpenAI documentation because returned web-search source metadata can omit publication/update dates. This does not infer or fabricate a source date; it makes age non-restrictive and records the policy version, retrieval time, and provenance. Cached demo mode retains a 30-day maximum age.
 
@@ -99,12 +102,14 @@ The packaged live demo applies an explicit no-maximum-age policy to canonical Op
 
 Malformed response shapes, fabricated source references, invalid ranges, unsafe URLs, disallowed domains, insufficient sources, and provider failures cannot be normalized away. They produce explicit integrity issues and, when required evidence is affected, a source or analysis error under gate policy.
 
-The live demo permits exactly one correction request when Stage B returns invalid JSON, violates the strict output schema, or fails local ID/binding/status validation. The correction receives the same bounded/redacted input plus at most 50 sanitized validation issues; it receives no tools, raw prior response, or `previous_response_id`. Refusals, incomplete responses, invalid local input, provider failures, and aborted operations are not retried. The same strict validator checks the correction, repeated failure propagates, and retry remains disabled by default for direct library users.
+The live demo permits two different bounded recovery mechanisms. Stage A may make the single fixed focused request described above only when positive, current, source-bound single-guide coverage is absent for domain filtering, consulted-source metadata, URL citation annotations, or visible/clickable citation presentation. This coverage predicate controls only whether the one focused request is made; it does not set or relax any criterion assessment or gate result. Stage B may make exactly one correction request when the adjudicator returns invalid JSON, violates the strict output schema, or fails local ID/binding/status validation. The correction receives the same bounded/redacted input plus at most 50 sanitized validation issues; it receives no tools, raw prior response, or `previous_response_id`. Refusals, incomplete responses, invalid local input, provider failures, and aborted operations are not retried. The same strict validator checks the correction, repeated failure propagates, and retry remains disabled by default for direct library users.
 
 ## Verification checklist
 
 - [x] Confirm the configured account could call the `gpt-5.6` Sol alias on 2026-07-18.
-- [ ] Confirm the configured account can call `gpt-5.6-terra` after API quota is restored.
+- [x] Confirm the configured account can call `gpt-5.6-terra`; the separate live source-research test passed on 2026-07-20.
+- [x] Confirm the bounded two-pass packaged Terra workflow produces incomplete Fail and corrected Pass; the 2026-07-20 run completed in 79.3 seconds and both bundles independently verified.
+- [ ] Rerun the packaged workflow on the exact release head after the detector-only canonical-URL/wording normalization.
 - [x] Confirm one live Responses API `web_search` tool call.
 - [ ] Confirm search-source arrays and direct open/find action URLs are retained from completed `web_search_call` items.
 - [x] Confirm native citation annotations bind to returned sources.
