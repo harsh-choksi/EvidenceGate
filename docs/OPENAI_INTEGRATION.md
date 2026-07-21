@@ -1,6 +1,6 @@
 # OpenAI integration
 
-This document defines EvidenceGate's OpenAI boundary. It describes the implemented contract and required verification. A successful live API Fail-to-Pass smoke test using the historical `gpt-5.6` Sol alias was completed on 2026-07-18. The active Terra default has now passed both its separate live source-research test and a bounded two-pass packaged Fail-to-Pass workflow. A detector-only canonical-URL/wording normalization followed the packaged run, so one exact-head live smoke remains before final release capture. See [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for the recorded command and bundle evidence.
+This document defines EvidenceGate's OpenAI boundary. It describes the implemented contract and required verification. A successful live API Fail-to-Pass smoke test using the historical `gpt-5.6` Sol alias was completed on 2026-07-18. The active Terra default has passed its separate live source-research test, a bounded two-pass packaged recovery run, and the final one-pass packaged workflow at exact runtime commit `e54e855` on 2026-07-21. See [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for the recorded command and bundle evidence.
 
 ## Runtime role
 
@@ -109,13 +109,13 @@ The live demo permits two different bounded recovery mechanisms. Stage A may mak
 - [x] Confirm the configured account could call the `gpt-5.6` Sol alias on 2026-07-18.
 - [x] Confirm the configured account can call `gpt-5.6-terra`; the separate live source-research test passed on 2026-07-20.
 - [x] Confirm the bounded two-pass packaged Terra workflow produces incomplete Fail and corrected Pass; the 2026-07-20 run completed in 79.3 seconds and both bundles independently verified.
-- [ ] Rerun the packaged workflow on the exact release head after the detector-only canonical-URL/wording normalization.
+- [x] Rerun the packaged workflow on exact runtime commit `e54e855` after the detector-only canonical-URL/wording normalization; it completed in 63.2 seconds with one research pass.
 - [x] Confirm one live Responses API `web_search` tool call.
 - [ ] Confirm search-source arrays and direct open/find action URLs are retained from completed `web_search_call` items.
 - [x] Confirm native citation annotations bind to returned sources.
 - [x] Confirm allowed-domain behavior with current official OpenAI hosts.
 - [ ] Confirm the generated report renders citations visibly and clickably.
-- [ ] Confirm logs, errors, reports, and bundles do not contain the API key.
+- [x] Confirm the final console transcript, reports, and bundles do not contain the API key; process cleanup left `OPENAI_API_KEY` absent.
 - [x] Record the commands and timestamps in `IMPLEMENTATION_STATUS.md`.
 
 Do not check these boxes based on fixtures or documentation alone.

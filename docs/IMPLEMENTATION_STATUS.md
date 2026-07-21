@@ -1,30 +1,30 @@
 # Implementation status
 
-Snapshot date: **2026-07-20**. This is a conservative record of observed results. It includes successful packaged end-to-end live API Fail-to-Pass runs using both the historical GPT-5.6 Sol alias and the active `gpt-5.6-terra` default, public release-candidate merge `2c5630e8623c2dba7972804f445615f0b29c9d0a`, successful hosted Windows/macOS/Linux CI with cross-platform hash comparison, and a deployed no-build judge site. The bounded Terra run completed two research passes, an incomplete-scenario Fail, and a corrected-scenario Pass; its bundles independently verified. A detector-only canonical-URL/wording normalization was added afterward, so this record does not claim an exact-head final live smoke, final tag, video completion, `/feedback` capture, eligibility review, or Build Week submission.
+Snapshot date: **2026-07-21**. This is a conservative record of observed results. It includes successful packaged end-to-end live API Fail-to-Pass runs using both the historical GPT-5.6 Sol alias and the active `gpt-5.6-terra` default, public release-candidate merge `2c5630e8623c2dba7972804f445615f0b29c9d0a`, successful hosted Windows/macOS/Linux CI with cross-platform hash comparison, and a deployed no-build judge site. After the bounded two-pass Terra recovery run, exact runtime commit `e54e855` completed the workflow in one research pass with an incomplete-scenario Fail and corrected-scenario Pass; both bundles independently verified. This record does not claim a final merge/tag, video completion, `/feedback` capture, eligibility review, or Build Week submission.
 
 ## Verified release-candidate results
 
-| Check                      | Observed result                                                                                                                                   |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dependency installation    | The documented frozen-lockfile install completed from a fresh clone of public `main`.                                                             |
-| Formatting                 | `pnpm format:check` passed.                                                                                                                       |
-| Lint                       | `pnpm lint` passed with zero warnings.                                                                                                            |
-| Types                      | `pnpm typecheck` passed across the workspace.                                                                                                     |
-| Tests                      | Current local `pnpm test` passed: 22 test files passed, 1 live-only file skipped; 202 tests passed, 1 live-only test skipped.                     |
-| Build                      | `pnpm build` passed.                                                                                                                              |
-| Full quality gate          | Current `pnpm verify` passed locally with 202 offline tests; the pre-retrieval-fix Terra baseline passed hosted Windows, macOS, and Ubuntu.       |
-| Cached demo                | `pnpm demo` produced the intended Fail and Pass bundles/reports without a network or model call; all three hosted operating systems matched.      |
-| Live demo                  | The 2026-07-20 Terra run completed two research passes in 79.3s: incomplete Fail at 1/14, corrected Pass at 14/14, one adjudication per scenario. |
-| Cached bundle verification | The CLI verified both cached generated bundles; tampering and forged stored gate decisions are covered by negative tests.                         |
-| Live bundle verification   | The CLI independently verified both latest Terra bundles, their references, deterministic decisions, and canonical hashes.                        |
-| Live artifact scan         | A targeted scan of the latest Terra JSON bundles and HTML reports found no API-key/Bearer-token pattern, local path, or `file:///` URL.           |
-| CLI smoke checks           | Help/version output and `task validate fixtures/demo-task.json` completed successfully.                                                           |
-| Submission validator       | `pnpm validate:submission` passed after deployment and reports 29 intentionally pending human checklist items.                                    |
-| Public repository          | GitHub reports `harsh-choksi/EvidenceGate` as `PUBLIC` with default branch `main`; an unauthenticated request returned `200` with `logged_in=no`. |
-| Verified product merge     | Terra pull request [#4](https://github.com/harsh-choksi/EvidenceGate/pull/4) was squash-merged as `2c5630e8623c2dba7972804f445615f0b29c9d0a`.     |
-| Hosted CI                  | [GitHub Actions run 29678621308](https://github.com/harsh-choksi/EvidenceGate/actions/runs/29678621308) passed on Windows, macOS, and Ubuntu.     |
-| Cross-platform artifacts   | CI downloaded all three demo artifacts and verified identical Fail and Pass bundle hashes before allowing deployment.                             |
-| Public judge site          | Signed-out checks opened the landing page and both reports at `https://harsh-choksi.github.io/EvidenceGate/`; deployed JSON hashes matched CI.    |
+| Check                      | Observed result                                                                                                                                     |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dependency installation    | The documented frozen-lockfile install completed from a fresh clone of public `main`.                                                               |
+| Formatting                 | `pnpm format:check` passed.                                                                                                                         |
+| Lint                       | `pnpm lint` passed with zero warnings.                                                                                                              |
+| Types                      | `pnpm typecheck` passed across the workspace.                                                                                                       |
+| Tests                      | Current local `pnpm test` passed: 22 test files passed, 1 live-only file skipped; 202 tests passed, 1 live-only test skipped.                       |
+| Build                      | `pnpm build` passed.                                                                                                                                |
+| Full quality gate          | Current `pnpm verify` passed locally with 202 offline tests; commit `e54e855` passed hosted Windows, macOS, Ubuntu, and cross-platform comparison.  |
+| Cached demo                | `pnpm demo` produced the intended Fail and Pass bundles/reports without a network or model call; all three hosted operating systems matched.        |
+| Live demo                  | Exact runtime commit `e54e855` completed one Terra research pass in 63.2s: incomplete Fail at 1/14, corrected Pass at 14/14, one adjudication each. |
+| Cached bundle verification | The CLI verified both cached generated bundles; tampering and forged stored gate decisions are covered by negative tests.                           |
+| Live bundle verification   | The CLI independently verified both latest Terra bundles, their references, deterministic decisions, and canonical hashes.                          |
+| Live artifact scan         | A targeted scan of the latest Terra JSON bundles and HTML reports found no API-key/Bearer-token pattern, local path, or `file:///` URL.             |
+| CLI smoke checks           | Help/version output and `task validate fixtures/demo-task.json` completed successfully.                                                             |
+| Submission validator       | `pnpm validate:submission` passed after the final live-evidence update and reports 28 intentionally pending human checklist items.                  |
+| Public repository          | GitHub reports `harsh-choksi/EvidenceGate` as `PUBLIC` with default branch `main`; an unauthenticated request returned `200` with `logged_in=no`.   |
+| Verified product merge     | Terra pull request [#4](https://github.com/harsh-choksi/EvidenceGate/pull/4) was squash-merged as `2c5630e8623c2dba7972804f445615f0b29c9d0a`.       |
+| Hosted CI                  | [GitHub Actions run 29678621308](https://github.com/harsh-choksi/EvidenceGate/actions/runs/29678621308) passed on Windows, macOS, and Ubuntu.       |
+| Cross-platform artifacts   | CI downloaded all three demo artifacts and verified identical Fail and Pass bundle hashes before allowing deployment.                               |
+| Public judge site          | Signed-out checks opened the landing page and both reports at `https://harsh-choksi.github.io/EvidenceGate/`; deployed JSON hashes matched CI.      |
 
 The offline suite covers strict schemas and known-ID binding; canonical hashing; exact stored gate-policy inputs and full decision recomputation; cross-layer assessment consistency; bounded Git and command collection; secret redaction; exact source-plan/artifact binding and full-payload hashing; URL/domain/source-ID/citation/freshness/authority/conflict revalidation; criterion-specific cited-text semantics; Stage-B structured-output coverage, required candidate scopes, source-type-aware status validation, cross-binding, and bounded correction behavior; prompt injection; generic workflow orchestration; and escaped, link-safe static reporting.
 
@@ -81,12 +81,21 @@ The current offline repair therefore keeps the broad primary request atomic and 
 
 On the evening of 2026-07-20 America/New_York (artifact timestamps are 2026-07-21 UTC), the bounded packaged Terra rerun succeeded in 79.3 seconds. Its two provider responses produced one merged research run with nine completed Web Search calls, 22 current allowed official sources, and 11 bound native citations. Each scenario completed one adjudication attempt. The incomplete patch correctly failed at 1 of 14 required criteria verified; the corrected patch passed all 14. The CLI independently revalidated both bundles, and static report inspection found valid source/citation bindings, only allowed HTTPS links and internal anchors, and no secret or machine-local path markers.
 
-| Terra scenario                   | Generated (UTC)            | Gate | Bundle SHA-256                                                     |
+| Recovery Terra scenario          | Generated (UTC)            | Gate | Bundle SHA-256                                                     |
 | -------------------------------- | -------------------------- | ---- | ------------------------------------------------------------------ |
 | `sourced-answer-incomplete-live` | `2026-07-21T03:53:04.290Z` | Fail | `cd52a9ba91c6633c892b5701368bac4c0d2c7ec30e91c999b5bde3936007b2b6` |
 | `sourced-answer-corrected-live`  | `2026-07-21T03:53:25.748Z` | Pass | `2c2ca50e90c4d8a6550c352de37fc674a83363d46a44f8f7aeb4ed6a69b29171` |
 
-The run printed `Canonical guide coverage: incomplete`, but that diagnostic controlled only whether the bounded focused research pass was attempted; it did not feed the deterministic gate. The returned corpus contained bound official evidence sufficient for every corrected external criterion. The diagnostic was a lexical/URL false negative: the official `/docs/guides/tools-web-search` URL redirects to the audited `/api/docs/guides/tools-web-search` page, and the narrative used `requires` where the detector recognized only `must` or `required`. The detector now accepts that exact audited redirect form and `require`/`requires`, and the console labels the predicate as non-gating. Those detector-only changes do not alter citation admission, Stage-B validation, criterion status, or gate policy. Because they followed the live run, the run is valid bundle and gate evidence but is not an exact-current-head smoke. One exact-head live rerun remains before the final tag and video; no final tag or release has been created.
+The recovery run printed `Canonical guide coverage: incomplete`, but that diagnostic controlled only whether the bounded focused research pass was attempted; it did not feed the deterministic gate. The returned corpus contained bound official evidence sufficient for every corrected external criterion. The diagnostic was a lexical/URL false negative: the official `/docs/guides/tools-web-search` URL redirects to the audited `/api/docs/guides/tools-web-search` page, and the narrative used `requires` where the detector recognized only `must` or `required`. The detector now accepts that exact audited redirect form and `require`/`requires`, and the console labels the predicate as non-gating. Those detector-only changes do not alter citation admission, Stage-B validation, criterion status, or gate policy.
+
+On 2026-07-21, the clean exact runtime commit `e54e855542fd1ff66c8bc581783e7be5e2ffde81` exercised that normalization successfully. The packaged `gpt-5.6-terra` workflow completed in 63.2 seconds using one shared research response/pass, so no focused follow-up was needed. The research run contained four completed Web Search calls, 24 current allowed official sources (21 from `developers.openai.com` and 3 from `platform.openai.com`), and six bound native citations. Each scenario completed one adjudication attempt. The incomplete patch failed at 1 of 14 required criteria verified; the corrected patch passed all 14. Single-guide umbrella coverage was complete.
+
+| Exact-runtime Terra scenario     | Generated (UTC)            | Gate | Bundle SHA-256                                                     |
+| -------------------------------- | -------------------------- | ---- | ------------------------------------------------------------------ |
+| `sourced-answer-incomplete-live` | `2026-07-21T04:24:41.052Z` | Fail | `7f49f5b3b5bb23a70a8d52539adbab239932fdf343b988bd9ba021d03d31d14f` |
+| `sourced-answer-corrected-live`  | `2026-07-21T04:25:01.716Z` | Pass | `3242c7ba7249b2fcab2631ae4ecc41677c2e860376f6df6c1b7780c177ae9b61` |
+
+The CLI independently revalidated both exact-runtime bundles. A structural audit found zero source/citation/URL binding errors; the HTML reports link only to allowed official HTTPS hosts or valid internal anchors. Scans of both JSON bundles, both HTML reports, and the console transcript found no API-key/Bearer value, `OPENAI_API_KEY`, local Windows path, OneDrive/AppData marker, or `file://` URL. The PowerShell `finally` cleanup left `OPENAI_API_KEY` absent. A later documentation-only evidence commit does not change the exercised runtime; any executable, schema, fixture, configuration, workflow, or lockfile change requires new live evidence. No final tag or release has been created.
 
 Release hardening also pins tracked text to LF for deterministic cross-platform fixtures, raises the declared Node.js floor to 20.12 because the live launcher uses `process.loadEnvFile`, and narrows the example OpenAI documentation policy to `developers.openai.com` and `platform.openai.com`.
 
@@ -111,7 +120,7 @@ Pull request [#1](https://github.com/harsh-choksi/EvidenceGate/pull/1) added the
 
 ## Still open before submission
 
-- With `gpt-5.6-terra` enabled under Project Model Usage, run one exact-head packaged live smoke after the detector-only URL/wording normalization and before the final tag/video; ordinary CI remains offline.
+- Merge the verified release pull request and create the final release identifier/tag without changing the exercised runtime; ordinary CI remains offline for live API calls.
 - Recheck the official rules, FAQ/notices, eligibility, selected category, and actual Devpost form immediately before submission.
 - Record, upload, and signed-out-test the public video.
 - Capture and verify the primary Codex `/feedback` Session ID.

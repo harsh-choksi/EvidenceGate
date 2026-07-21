@@ -9,7 +9,7 @@ Target: **2 minutes 50 seconds**. The official submission video must be less tha
 - From Windows PowerShell, install with `npx.cmd --yes pnpm@11.9.0 install --frozen-lockfile`. On macOS or Linux, use `npx` in place of `npx.cmd`.
 - Before recording, inject `OPENAI_API_KEY` only for the secure pre-run, remove it in a `finally` block, and confirm `Test-Path Env:OPENAI_API_KEY` returns `False`. The recorded take uses the already-generated artifacts with no API key present; never show the value.
 - Open the hosted cached judge demo before recording and retain the local reports as a backup.
-- Pre-run the exact release-head live workflow before recording. The latest verified two-pass Terra run took 79.3 seconds, but network/model timing varies; show its already-generated artifacts during the timed segment and do not imply that a fresh live call completes inside the video. If cached results must be used, label them visibly and narrate them as cached—never imply a live call.
+- Use the already-generated reports from the exact-runtime-head Terra workflow. That one-pass run took 63.2 seconds, but network/model timing varies; do not imply that a fresh live call completes inside the video. If cached results must be used, label them visibly and narrate them as cached—never imply a live call.
 - Hide API keys, account details, notifications, private tabs, tokens, and local usernames.
 - When exporting a report to PDF, disable browser **Headers and footers** so the local `file:///` path and username are not printed; reject any preview with orphaned section headings or a footer-only final page.
 - Ensure source links open safely and that no third-party copyrighted music/material appears.
