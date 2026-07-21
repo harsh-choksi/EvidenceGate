@@ -1,30 +1,31 @@
 # Implementation status
 
-Snapshot date: **2026-07-21**. This is a conservative record of observed results. It includes successful packaged end-to-end live API Fail-to-Pass runs using both the historical GPT-5.6 Sol alias and the active `gpt-5.6-terra` default, public release-candidate merge `2c5630e8623c2dba7972804f445615f0b29c9d0a`, successful hosted Windows/macOS/Linux CI with cross-platform hash comparison, and a deployed no-build judge site. After the bounded two-pass Terra recovery run, exact runtime commit `e54e855` completed the workflow in one research pass with an incomplete-scenario Fail and corrected-scenario Pass; both bundles independently verified. This record does not claim a final merge/tag, video completion, `/feedback` capture, eligibility review, or Build Week submission.
+Snapshot date: **2026-07-21**. This is a conservative record of observed results. It includes successful packaged end-to-end live API Fail-to-Pass runs using both the historical GPT-5.6 Sol alias and the active `gpt-5.6-terra` default, public release merge `ceb2c0f5b5cc62e2fad32fa993b0d19752a2d3c3`, successful hosted Windows/macOS/Linux CI with cross-platform hash comparison, and a deployed no-build judge site. After the bounded two-pass Terra recovery run, exact runtime commit `e54e855` completed the workflow in one research pass with an incomplete-scenario Fail and corrected-scenario Pass; both bundles independently verified. This record does not claim a final tag, video completion, `/feedback` capture, eligibility review, or Build Week submission.
 
 ## Verified release-candidate results
 
-| Check                      | Observed result                                                                                                                                     |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dependency installation    | The documented frozen-lockfile install completed from a fresh clone of public `main`.                                                               |
-| Formatting                 | `pnpm format:check` passed.                                                                                                                         |
-| Lint                       | `pnpm lint` passed with zero warnings.                                                                                                              |
-| Types                      | `pnpm typecheck` passed across the workspace.                                                                                                       |
-| Tests                      | Current local `pnpm test` passed: 22 test files passed, 1 live-only file skipped; 202 tests passed, 1 live-only test skipped.                       |
-| Build                      | `pnpm build` passed.                                                                                                                                |
-| Full quality gate          | Current `pnpm verify` passed locally with 202 offline tests; commit `e54e855` passed hosted Windows, macOS, Ubuntu, and cross-platform comparison.  |
-| Cached demo                | `pnpm demo` produced the intended Fail and Pass bundles/reports without a network or model call; all three hosted operating systems matched.        |
-| Live demo                  | Exact runtime commit `e54e855` completed one Terra research pass in 63.2s: incomplete Fail at 1/14, corrected Pass at 14/14, one adjudication each. |
-| Cached bundle verification | The CLI verified both cached generated bundles; tampering and forged stored gate decisions are covered by negative tests.                           |
-| Live bundle verification   | The CLI independently verified both latest Terra bundles, their references, deterministic decisions, and canonical hashes.                          |
-| Live artifact scan         | A targeted scan of the latest Terra JSON bundles and HTML reports found no API-key/Bearer-token pattern, local path, or `file:///` URL.             |
-| CLI smoke checks           | Help/version output and `task validate fixtures/demo-task.json` completed successfully.                                                             |
-| Submission validator       | `pnpm validate:submission` passed after the final live-evidence update and reports 28 intentionally pending human checklist items.                  |
-| Public repository          | GitHub reports `harsh-choksi/EvidenceGate` as `PUBLIC` with default branch `main`; an unauthenticated request returned `200` with `logged_in=no`.   |
-| Verified product merge     | Terra pull request [#4](https://github.com/harsh-choksi/EvidenceGate/pull/4) was squash-merged as `2c5630e8623c2dba7972804f445615f0b29c9d0a`.       |
-| Hosted CI                  | [GitHub Actions run 29678621308](https://github.com/harsh-choksi/EvidenceGate/actions/runs/29678621308) passed on Windows, macOS, and Ubuntu.       |
-| Cross-platform artifacts   | CI downloaded all three demo artifacts and verified identical Fail and Pass bundle hashes before allowing deployment.                               |
-| Public judge site          | Signed-out checks opened the landing page and both reports at `https://harsh-choksi.github.io/EvidenceGate/`; deployed JSON hashes matched CI.      |
+| Check                      | Observed result                                                                                                                                                                         |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dependency installation    | The documented frozen-lockfile install completed from a fresh clone of public `main`.                                                                                                   |
+| Formatting                 | `pnpm format:check` passed.                                                                                                                                                             |
+| Lint                       | `pnpm lint` passed with zero warnings.                                                                                                                                                  |
+| Types                      | `pnpm typecheck` passed across the workspace.                                                                                                                                           |
+| Tests                      | Current local `pnpm test` passed: 22 test files passed, 1 live-only file skipped; 202 tests passed, 1 live-only test skipped.                                                           |
+| Build                      | `pnpm build` passed.                                                                                                                                                                    |
+| Full quality gate          | Current `pnpm verify` passed locally with 202 offline tests; commit `e54e855` passed hosted Windows, macOS, Ubuntu, and cross-platform comparison.                                      |
+| Cached demo                | `pnpm demo` produced the intended Fail and Pass bundles/reports without a network or model call; all three hosted operating systems matched.                                            |
+| Live demo                  | Exact runtime commit `e54e855` completed one Terra research pass in 63.2s: incomplete Fail at 1/14, corrected Pass at 14/14, one adjudication each.                                     |
+| Cached bundle verification | The CLI verified both cached generated bundles; tampering and forged stored gate decisions are covered by negative tests.                                                               |
+| Live bundle verification   | The CLI independently verified both latest Terra bundles, their references, deterministic decisions, and canonical hashes.                                                              |
+| Live artifact scan         | A targeted scan of the latest Terra JSON bundles and HTML reports found no API-key/Bearer-token pattern, local path, or `file:///` URL.                                                 |
+| CLI smoke checks           | Help/version output and `task validate fixtures/demo-task.json` completed successfully.                                                                                                 |
+| Submission validator       | `pnpm validate:submission` passed after the final merge update and reports 27 intentionally pending human checklist items.                                                              |
+| Public repository          | GitHub reports `harsh-choksi/EvidenceGate` as `PUBLIC` with default branch `main`; an unauthenticated request returned `200` with `logged_in=no`.                                       |
+| Verified product merge     | Terra pull request [#4](https://github.com/harsh-choksi/EvidenceGate/pull/4) was squash-merged as `2c5630e8623c2dba7972804f445615f0b29c9d0a`.                                           |
+| Verified retrieval merge   | Pull request [#5](https://github.com/harsh-choksi/EvidenceGate/pull/5) was merge-committed as `ceb2c0f5b5cc62e2fad32fa993b0d19752a2d3c3`, preserving live-tested `e54e855`.             |
+| Hosted CI                  | [GitHub Actions run 29801942746](https://github.com/harsh-choksi/EvidenceGate/actions/runs/29801942746) passed Windows, macOS, Ubuntu, artifact comparison, and judge-site publication. |
+| Cross-platform artifacts   | CI downloaded all three demo artifacts and verified identical Fail and Pass bundle hashes before allowing deployment.                                                                   |
+| Public judge site          | The post-merge landing page returned `200` and contained both expected cached bundle hashes at `https://harsh-choksi.github.io/EvidenceGate/`.                                          |
 
 The offline suite covers strict schemas and known-ID binding; canonical hashing; exact stored gate-policy inputs and full decision recomputation; cross-layer assessment consistency; bounded Git and command collection; secret redaction; exact source-plan/artifact binding and full-payload hashing; URL/domain/source-ID/citation/freshness/authority/conflict revalidation; criterion-specific cited-text semantics; Stage-B structured-output coverage, required candidate scopes, source-type-aware status validation, cross-binding, and bounded correction behavior; prompt injection; generic workflow orchestration; and escaped, link-safe static reporting.
 
@@ -120,7 +121,7 @@ Pull request [#1](https://github.com/harsh-choksi/EvidenceGate/pull/1) added the
 
 ## Still open before submission
 
-- Merge the verified release pull request and create the final release identifier/tag without changing the exercised runtime; ordinary CI remains offline for live API calls.
+- Use merge commit `ceb2c0f5b5cc62e2fad32fa993b0d19752a2d3c3` as the final release identifier; create an optional tag only after final release review. Ordinary CI remains offline for live API calls.
 - Recheck the official rules, FAQ/notices, eligibility, selected category, and actual Devpost form immediately before submission.
 - Record, upload, and signed-out-test the public video.
 - Capture and verify the primary Codex `/feedback` Session ID.

@@ -75,7 +75,7 @@ Draft `1103829-evidencegate` was created on 2026-07-19. Project overview and pro
 
 ## Final release protocol
 
-- [ ] Freeze major features; create final release/commit identifier.
+- [x] Freeze major features; create final release/commit identifier. Pull request #5 merged as `ceb2c0f5b5cc62e2fad32fa993b0d19752a2d3c3`, preserving exact live-tested runtime commit `e54e855` in its ancestry.
 - [x] Run fresh-clone install/demo/test rehearsal using only judge-facing instructions.
 - [x] Run final live OpenAI smoke test and record time/model/source result without secrets.
 
